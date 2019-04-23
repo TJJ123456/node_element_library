@@ -1,4 +1,4 @@
-import { BookShelf } from '../providers'
+import { BookShelf, Books } from '../providers'
 import express from 'express'
 const route = express.Router();
 
@@ -11,7 +11,7 @@ route.post('/create', async (req, res, next) => {
         const food = await getByname(req.body.name);
         console.log(food);
         if (food) {
-            throw new Error('已有同名的酒店');
+            throw new Error('已有同名的书架');
         }
         const newDoc = await BookShelf.insert(req.body);
         res.json({ status: 'ok' })
@@ -38,6 +38,10 @@ route.post('/list', async (req, res, next) => {
     const offset = req.body.offset;
     try {
         let data = await BookShelf.find({}, { limit: limit, skip: offset });
+        for (let i = 0; i < data.length; ++i) {
+            console.log('xxxxxxxxxxx', data[i]._id);
+            data[i].bookList = await Books.find({ 'bookshelf': data[i]._id })
+        }
         res.json({
             data: data
         });
@@ -49,6 +53,9 @@ route.post('/list', async (req, res, next) => {
 route.get('/list', async (req, res, next) => {
     try {
         let data = await BookShelf.find({});
+        for (let i = 0; i < data.length; ++i) {
+            data[i].bookList = Books.find({ bookshelf: data[i]._id })
+        }
         res.json({
             data: data
         });
@@ -61,6 +68,7 @@ route.post('/delete', async (req, res, next) => {
     const id = req.body.id;
     try {
         let data = await BookShelf.removeOne({ _id: id });
+        let tmp = await Books.update({ 'bookshelf': id }, { $set: { 'bookshelf': "" } })
         res.json({ status: 'ok' })
     } catch (e) {
         res.status(405).send(e.message);

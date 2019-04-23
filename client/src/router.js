@@ -31,6 +31,7 @@ const routes = [
         path: '/', name: 'userhome', component: userLayout,
         children: [{
             path: '/',
+            name: 'userindex',
             component: userhome,
             meta: [],
         },

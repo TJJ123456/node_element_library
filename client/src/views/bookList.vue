@@ -4,9 +4,9 @@
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="desc" label="描述"></el-table-column>
-        <el-table-column prop="type" label="类型"></el-table-column>
-        <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="author" label="作者"></el-table-column>
+        <el-table-column prop="publisher" label="出版社"></el-table-column>
+        <el-table-column prop="state" label="状态"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -23,24 +23,48 @@
           :total="count"
         ></el-pagination>
       </div>
-      <el-dialog title="修改美食信息" :visible.sync="dialogFormVisible">
-        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
-          <el-form-item label="名称" prop="name">
+      <el-dialog title="修改书籍信息" :visible.sync="dialogFormVisible">
+        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm" v-loading="loading">
+          <el-form-item label="书名" prop="name">
             <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="描述" prop="desc">
+          <el-form-item label="摘要" prop="desc">
             <el-input v-model="dialogForm.desc"></el-input>
           </el-form-item>
-          <el-form-item label="食品分类" prop="type">
-            <el-select v-model.number="dialogForm.type" placeholder="请选择食品分类">
-              <el-option label="早餐" value="早餐"></el-option>
-              <el-option label="午餐" value="午餐"></el-option>
-              <el-option label="晚餐" value="晚餐"></el-option>
+          <el-form-item label="作者" prop="author">
+            <el-input v-model.number="dialogForm.author"></el-input>
+          </el-form-item>
+          <el-form-item label="出版社" prop="publisher">
+            <el-input v-model.number="dialogForm.publisher"></el-input>
+          </el-form-item>
+          <el-form-item label="书本种类">
+            <el-checkbox-group v-model="dialogForm.genre">
+              <el-checkbox
+                v-for="(item, index) in genreList"
+                :key="index"
+                :label="item._id"
+                :name="item._id"
+              >{{item.name}}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="书本状态" prop="state">
+            <el-select v-model="dialogForm.state" placeholder="请选择书本状态">
+              <el-option label="维护" value="维护"></el-option>
+              <el-option label="可借阅" value="可借阅"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="价格" prop="price">
-            <el-input v-model.number="dialogForm.price"></el-input>
-          </el-form-item>
+          <template v-if="dialogForm.state==='可借阅'">
+            <el-form-item label="所属书架">
+              <el-select v-model="dialogForm.bookshelf" placeholder="请选择书架">
+                <el-option
+                  v-for="(item, index) in bookshelfList"
+                  :key="index"
+                  :label="item.name"
+                  :value="item._id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </template>
           <el-form-item>
             <el-row type="flex" justify="center">
               <el-button type="primary" @click="onSubmit('dialogForm')">提交修改</el-button>
@@ -55,6 +79,8 @@
 export default {
   data() {
     return {
+      genreList: [],
+      bookshelfList: [],
       editIndex: 0,
       currentPage: 1,
       offset: 0,
@@ -65,37 +91,43 @@ export default {
       loading: false,
       dialogForm: {},
       dialogFormrules: {
-        name: [{ required: true, message: "请输入食品名称", trigger: "blur" }],
-        desc: [{ required: true, message: "请输入食品描述", trigger: "blur" }],
-        type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
-        price: [
-          { required: true, message: "价格不能为空", trigger: "blur" },
-          { type: "number", message: "价格必须为数字值" }
-        ]
+        name: [{ required: true, message: "请输入书本名称", trigger: "blur" }],
+        desc: [{ required: true, message: "请输入书本摘要", trigger: "blur" }],
+        author: [{ required: true, message: "请输入作者", trigger: "blur" }],
+        publisher: [
+          { required: true, message: "请输入出版社", trigger: "blur" }
+        ],
+        state: [{ required: true, message: "请选择书本状态", trigger: "blur" }]
       }
     };
   },
   created() {
-    // this.initData();
+    this.initData();
   },
   activated() {
-    // this.GetListCount();
+    this.GetListCount();
   },
   watch: {},
   methods: {
     async initData() {
       // this.getList();
+      this.loading = true;
+      let genreList = await this.$fetch("genre/list");
+      let bookshelfList = await this.$fetch("bookshelf/list");
+      this.genreList = genreList.data;
+      this.bookshelfList = bookshelfList.data;
       this.GetListCount();
+      this.loading = false;
     },
     async GetListCount() {
-      let data = await this.$fetch("food/foodcount");
+      let data = await this.$fetch("book/count");
       if (data.data !== this.count) {
         this.getList();
         this.count = data.data;
       }
     },
     async getList() {
-      let data = await this.$fetch("food/foodlist", {
+      let data = await this.$fetch("book/list", {
         method: "POST",
         body: JSON.stringify({
           limit: this.limit,
@@ -110,7 +142,7 @@ export default {
       this.dialogForm = JSON.parse(JSON.stringify(this.tableData[index]));
     },
     async handleDelete(index, row) {
-      let data = await this.$fetch("food/delete", {
+      let data = await this.$fetch("book/delete", {
         method: "POST",
         body: JSON.stringify({
           id: this.tableData[index]._id
@@ -125,7 +157,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "删除美食成功",
+          message: "删除书本成功",
           type: "success"
         });
         this.tableData.splice(index, 1);
@@ -134,15 +166,15 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.changeFood();
+          this.change();
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    async changeFood() {
-      let data = await this.$fetch("food/change", {
+    async change() {
+      let data = await this.$fetch("book/change", {
         method: "POST",
         body: JSON.stringify(this.dialogForm)
       });
@@ -155,12 +187,18 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "修改美食信息成功",
+          message: "修改书本信息成功",
           type: "success"
         });
+        console.log(
+          "xxxxxxxxxxx",
+          this.tableData[this.editIndex],
+          this.dialogForm
+        );
         this.tableData[this.editIndex] = JSON.parse(
           JSON.stringify(this.dialogForm)
         );
+        console.log("xxxxxxxxxxx", this.tableData[this.editIndex]);
         this.dialogFormVisible = false;
       }
     },

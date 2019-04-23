@@ -3,12 +3,11 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="计划名称"></el-table-column>
-        <el-table-column prop="desc" label="描述"></el-table-column>
-        <el-table-column prop="type" label="类型"></el-table-column>
-        <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="name" label="种类名称"></el-table-column>
+        <el-table-column prop="bookList.length" label="种类数量"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -22,6 +21,18 @@
           :total="count"
         ></el-pagination>
       </div>
+      <el-dialog title="修改种类信息" :visible.sync="dialogFormVisible">
+        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-row type="flex" justify="center">
+              <el-button type="primary" @click="onSubmit('dialogForm')">提交修改</el-button>
+            </el-row>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -36,14 +47,18 @@ export default {
       count: 0,
       tableData: [],
       dialogFormVisible: false,
-      loading: false
+      loading: false,
+      dialogForm: {},
+      dialogFormrules: {
+        name: [{ required: true, message: "请输入种类名称", trigger: "blur" }]
+      }
     };
   },
   created() {
-    // this.initData();
+    this.initData();
   },
   activated() {
-    // this.initData();
+    this.initData();
   },
   watch: {},
   methods: {
@@ -52,14 +67,14 @@ export default {
       this.GetListCount();
     },
     async GetListCount() {
-      let data = await this.$fetch("plan/count");
+      let data = await this.$fetch("genre/count");
       if (data.data !== this.count) {
         this.getList();
         this.count = data.data;
       }
     },
     async getList() {
-      let data = await this.$fetch("plan/list", {
+      let data = await this.$fetch("genre/list", {
         method: "POST",
         body: JSON.stringify({
           limit: this.limit,
@@ -74,7 +89,7 @@ export default {
       this.dialogForm = JSON.parse(JSON.stringify(this.tableData[index]));
     },
     async handleDelete(index, row) {
-      let data = await this.$fetch("plan/delete", {
+      let data = await this.$fetch("genre/delete", {
         method: "POST",
         body: JSON.stringify({
           id: this.tableData[index]._id
@@ -89,7 +104,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "删除计划成功",
+          message: "删除种类成功",
           type: "success"
         });
         this.tableData.splice(index, 1);
@@ -99,6 +114,39 @@ export default {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
       this.getList();
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.changeItem();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    async changeItem() {
+      let data = await this.$fetch("genre/change", {
+        method: "POST",
+        body: JSON.stringify(this.dialogForm)
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "修改种类信息成功",
+          type: "success"
+        });
+        this.tableData[this.editIndex] = JSON.parse(
+          JSON.stringify(this.dialogForm)
+        );
+        this.dialogFormVisible = false;
+      }
     }
   }
 };

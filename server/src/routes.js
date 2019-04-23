@@ -45,4 +45,11 @@ export default function (app) {
       })
     }
   })
+
+  app.get('/managerLogout', (req, res, next) => {
+    req.session.manager = null;
+    res.json({
+      status: 'ok'
+    })
+  })
 }

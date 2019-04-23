@@ -2,7 +2,11 @@
   <div>
     <el-row style="margin-top: 20px;">
       <el-col :span="14" :offset="4">
-        <header class="form_header">{{title}}</header>
+        <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+          <el-tab-pane label="登陆" name="first"></el-tab-pane>
+          <el-tab-pane label="注册" name="second"></el-tab-pane>
+        </el-tabs>
+        <!-- <header class="form_header">{{title}}</header> -->
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -23,12 +27,6 @@
             <el-row type="flex" justify="center">
               <el-button type="primary" @click="onSubmit('ruleForm')">{{title}}</el-button>
               <!-- <el-button type="success" @click="mode = 'signup'">注册</el-button> -->
-            </el-row>
-          </el-form-item>
-          <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button v-if="mode==='login'" @click="mode = 'signup'" type="text">注册</el-button>
-              <el-button v-else-if="mode==='signup'" @click="mode = 'login'" type="text">登录</el-button>
             </el-row>
           </el-form-item>
         </el-form>
@@ -53,6 +51,7 @@ export default {
     };
     return {
       mode: "login",
+      activeName2: "first",
       ruleForm: {
         username: "",
         password: "",
@@ -80,6 +79,14 @@ export default {
     }
   },
   methods: {
+    handleClick(tab, event) {
+      if (tab.index === '0') {
+        this.mode = "login";
+      } else {
+        this.mode = "signup";
+      }
+      console.log(this.mode);
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

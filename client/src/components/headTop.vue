@@ -2,9 +2,13 @@
   <div class="header_container">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/manager' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
+      <el-breadcrumb-item
+        style="color:white;"
+        v-for="(item, index) in $route.meta"
+        :key="index"
+      >{{item}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <a @click="logout">退出</a>
+    <a class="logout" @click="logout">退出</a>
   </div>
 </template>
 <script>
@@ -29,18 +33,24 @@ export default {
 <style lang="less">
 @import "../style/mixin";
 .header_container {
-  background-color: #eff2f7;
+  background-color: #474747;
   height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-left: 20px;
 }
-</style>
-<style scoped>
-a {
+
+.logout {
   line-height: 60px;
+  height: 60px;
+  width: 80px;
   color: white;
   text-decoration: none;
+  &:hover {
+    cursor: pointer;
+  }
 }
+</style>
+<style lang="less" scoped>
 </style>

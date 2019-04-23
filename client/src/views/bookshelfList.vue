@@ -3,12 +3,13 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="酒店名称"></el-table-column>
+        <el-table-column prop="name" label="书架名称"></el-table-column>
         <el-table-column prop="desc" label="描述"></el-table-column>
-        <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="bookList.length" label="书架书本"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" @click="handleManage(scope.$index, scope.row)">管理</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -22,16 +23,13 @@
           :total="count"
         ></el-pagination>
       </div>
-      <el-dialog title="修改酒店信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="修改书架信息" :visible.sync="dialogFormVisible">
         <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
           <el-form-item label="名称" prop="name">
             <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="描述" prop="desc">
             <el-input v-model="dialogForm.desc"></el-input>
-          </el-form-item>
-          <el-form-item label="价格" prop="price">
-            <el-input v-model.number="dialogForm.price"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
@@ -56,20 +54,16 @@ export default {
       loading: false,
       dialogForm: {},
       dialogFormrules: {
-        name: [{ required: true, message: "请输入酒店名称", trigger: "blur" }],
-        desc: [{ required: true, message: "请输入酒店描述", trigger: "blur" }],
-        price: [
-          { required: true, message: "价格不能为空", trigger: "blur" },
-          { type: "number", message: "价格必须为数字值" }
-        ]
+        name: [{ required: true, message: "请输入书架名称", trigger: "blur" }],
+        desc: [{ required: true, message: "请输入书架描述", trigger: "blur" }]
       }
     };
   },
   created() {
-    // this.initData();
+    this.initData();
   },
   activated() {
-    // this.GetListCount();
+    this.GetListCount();
   },
   watch: {},
   methods: {
@@ -78,7 +72,7 @@ export default {
       this.GetListCount();
     },
     async GetListCount() {
-      let data = await this.$fetch("hotel/hotelcount");
+      let data = await this.$fetch("bookshelf/count");
 
       if (data.data !== this.count) {
         this.getList();
@@ -86,7 +80,7 @@ export default {
       }
     },
     async getList() {
-      let data = await this.$fetch("hotel/hotellist", {
+      let data = await this.$fetch("bookshelf/list", {
         method: "POST",
         body: JSON.stringify({
           limit: this.limit,
@@ -100,8 +94,11 @@ export default {
       this.dialogFormVisible = true;
       this.dialogForm = this.tableData[index];
     },
+    async handleManage(index, row) {
+      console.log(this.tableData[index]);
+    },
     async handleDelete(index, row) {
-      let data = await this.$fetch("hotel/delete", {
+      let data = await this.$fetch("bookshelf/delete", {
         method: "POST",
         body: JSON.stringify({
           id: this.tableData[index]._id
@@ -116,7 +113,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "删除美食成功",
+          message: "删除书架成功",
           type: "success"
         });
         this.tableData.splice(index, 1);
@@ -133,7 +130,7 @@ export default {
       });
     },
     async changeItem() {
-      let data = await this.$fetch("hotel/change", {
+      let data = await this.$fetch("bookshelf/change", {
         method: "POST",
         body: JSON.stringify(this.dialogForm)
       });
@@ -146,7 +143,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "修改酒店信息成功",
+          message: "修改书架信息成功",
           type: "success"
         });
         this.tableData[this.editIndex] = JSON.parse(

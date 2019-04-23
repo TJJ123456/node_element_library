@@ -1,5 +1,7 @@
 <template>
   <div>
+    <headTop/>
+
     <el-row style="margin-top: 20px;">
       <el-col :span="14" :offset="4">
         <header class="form_header">添加种类</header>
@@ -28,10 +30,10 @@ export default {
   data() {
     return {
       ruleForm: {
-        name: "",
+        name: ""
       },
       rules: {
-        name: [{ required: true, message: "请输入种类名称", trigger: "blur" }],
+        name: [{ required: true, message: "请输入种类名称", trigger: "blur" }]
       }
     };
   },
@@ -48,7 +50,7 @@ export default {
       });
     },
     async createFood() {
-      let data = await this.$fetch("hotel/create", {
+      let data = await this.$fetch("genre/create", {
         method: "POST",
         body: JSON.stringify(this.ruleForm)
       });
@@ -61,11 +63,11 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "创建酒店成功",
+          message: "创建种类成功",
           type: "success"
         });
-        this.resetForm('ruleForm');
-        this.$router.push({ path: "/hotelList" });
+        this.resetForm("ruleForm");
+        this.$router.push({ path: "/genreList" });
       }
     },
     resetForm(formName) {

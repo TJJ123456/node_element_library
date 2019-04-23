@@ -6,7 +6,7 @@
     <el-col :span="16" :offset="4">
       <el-row>
         <el-col :span="4">
-          <img src="http://localhost:3000/public/img/default.jpg" alt>
+          <!-- <img src="http://localhost:3000/public/img/default.jpg" alt> -->
         </el-col>
       </el-row>
     </el-col>

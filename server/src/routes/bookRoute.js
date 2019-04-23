@@ -16,7 +16,7 @@ route.post('/create', async (req, res, next) => {
     }
 })
 
-route.get('/foodcount', async (req, res, next) => {
+route.get('/count', async (req, res, next) => {
     try {
         let data = await Books.count({});
         res.json({
@@ -28,7 +28,7 @@ route.get('/foodcount', async (req, res, next) => {
 
 })
 
-route.post('/booklist', async (req, res, next) => {
+route.post('/list', async (req, res, next) => {
     const limit = req.body.limit;
     const offset = req.body.offset;
     try {
@@ -41,7 +41,7 @@ route.post('/booklist', async (req, res, next) => {
     }
 })
 
-route.get('/booklist', async (req, res, next) => {
+route.get('/list', async (req, res, next) => {
     try {
         let data = await Books.find({});
         res.json({

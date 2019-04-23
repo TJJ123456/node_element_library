@@ -1,7 +1,7 @@
 <template>
   <div class="manage_page fillcontain">
     <el-row style="height: 100%;">
-      <el-col :span="4" style="min-height: 100%; background-color: #409EFF;">
+      <el-col :span="4" style="min-height: 100%; background-color: #515151;">
         <el-menu :default-active="defaultActive" style="min-height: 100%;" theme="dark" router>
           <el-menu-item index="manager">
             <i class="el-icon-menu"></i>首页
@@ -49,7 +49,7 @@
 export default {
   data() {
     return {};
-  },
+},
   computed: {
     defaultActive: function() {
       return this.$route.path.replace("/", "");
@@ -63,4 +63,10 @@ export default {
 
 <style lang="less" scoped>
 @import "../style/mixin";
+.el-submenu {
+  // background-color: #ffa500;
+}
+
+.el-menu-item {
+}
 </style>
