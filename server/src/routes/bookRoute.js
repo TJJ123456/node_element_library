@@ -1,4 +1,4 @@
-import { Books } from '../providers'
+import { Books, BookShelf } from '../providers'
 import express from 'express'
 const route = express.Router();
 
@@ -33,6 +33,12 @@ route.post('/list', async (req, res, next) => {
     const offset = req.body.offset;
     try {
         let data = await Books.find({}, { limit: limit, skip: offset });
+        for (let i = 0; i < data.length; ++i) {
+            if (data[i].bookshelf !== '') {
+                let shelf = await BookShelf.findOne({ _id: data[i].bookshelf });
+                data[i].shelfname = shelf.name;
+            }
+        }
         res.json({
             data: data
         });

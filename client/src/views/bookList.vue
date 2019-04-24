@@ -7,6 +7,7 @@
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column prop="publisher" label="出版社"></el-table-column>
         <el-table-column prop="state" label="状态"></el-table-column>
+        <el-table-column prop="shelfname" label="书架"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -32,10 +33,10 @@
             <el-input v-model="dialogForm.desc"></el-input>
           </el-form-item>
           <el-form-item label="作者" prop="author">
-            <el-input v-model.number="dialogForm.author"></el-input>
+            <el-input v-model="dialogForm.author"></el-input>
           </el-form-item>
           <el-form-item label="出版社" prop="publisher">
-            <el-input v-model.number="dialogForm.publisher"></el-input>
+            <el-input v-model="dialogForm.publisher"></el-input>
           </el-form-item>
           <el-form-item label="书本种类">
             <el-checkbox-group v-model="dialogForm.genre">
@@ -198,7 +199,6 @@ export default {
         this.tableData[this.editIndex] = JSON.parse(
           JSON.stringify(this.dialogForm)
         );
-        console.log("xxxxxxxxxxx", this.tableData[this.editIndex]);
         this.dialogFormVisible = false;
       }
     },

@@ -38,6 +38,20 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+      <el-dialog title="书架书籍管理" :visible.sync="managerBookshelfVisible">
+        <el-form>
+          <el-form-item>
+            <template>
+              <el-transfer :titles="['无书架书籍', '该书架书籍']" v-model="afterTransferList" :data="transferBookList"></el-transfer>
+            </template>
+          </el-form-item>
+          <el-form-item>
+            <el-row type="flex" justify="center">
+              <el-button type="primary" @click="onChangeBookShelf()">提交修改</el-button>
+            </el-row>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -51,6 +65,12 @@ export default {
       count: 0,
       tableData: [],
       dialogFormVisible: false,
+      managerBookshelfVisible: false,
+      bookshelfForm:{},
+      bookList: [],
+      transferBookList: [],
+      afterTransferList: [],
+      originList:[],
       loading: false,
       dialogForm: {},
       dialogFormrules: {
@@ -69,7 +89,11 @@ export default {
   methods: {
     async initData() {
       // this.getList();
+      this.loading = true;
+      let bookList = await this.$fetch("book/list");
+      this.bookList = bookList.data;
       this.GetListCount();
+      this.loading = false;
     },
     async GetListCount() {
       let data = await this.$fetch("bookshelf/count");
@@ -95,7 +119,43 @@ export default {
       this.dialogForm = this.tableData[index];
     },
     async handleManage(index, row) {
-      console.log(this.tableData[index]);
+      this.managerBookshelfVisible = true;
+      this.transferBookList = [];
+      this.afterTransferList = [];
+      this.originList = [];
+      for(let i in this.bookList) {
+        const item = this.bookList[i];
+        if (item => item.bookshelf==='' || item.bookshelf === this.tableData[index]._id) {
+          this.transferBookList.push({
+            key: i,
+            label: item.name,
+            id: item._id,
+            shelf: item.bookshelf
+          })
+          if (item.bookshelf === this.tableData[index]._id) {
+            this.afterTransferList.push(i);
+            this.originList.push(i);
+          }
+        }
+      }
+    },
+    async onChangeBookShelf() {
+      this.loading = true;
+      let shelfList = [];
+      for(let i in this.afterTransferList) {
+        let index = this.afterTransferList[i];
+        if (this.transferBookList[index].shelf === '') {
+          shelfList.push(this.transferBookList[index].id);
+        }
+        let tmp = this.originList.findIndex(index);
+        console.log(tmp);
+        if (tmp !== -1){
+          // this.originList.splice(tmp, 1);
+        }
+      }
+      console.log(shelfList);
+      console.log(this.originList);
+      this.loading = false;
     },
     async handleDelete(index, row) {
       let data = await this.$fetch("bookshelf/delete", {
@@ -156,7 +216,7 @@ export default {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
       this.getList();
-    }
+    },
   }
 };
 </script>

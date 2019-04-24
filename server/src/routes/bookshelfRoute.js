@@ -30,7 +30,6 @@ route.get('/count', async (req, res, next) => {
     } catch (e) {
         res.status(405).send(e.message);
     }
-
 })
 
 route.post('/list', async (req, res, next) => {
@@ -39,7 +38,6 @@ route.post('/list', async (req, res, next) => {
     try {
         let data = await BookShelf.find({}, { limit: limit, skip: offset });
         for (let i = 0; i < data.length; ++i) {
-            console.log('xxxxxxxxxxx', data[i]._id);
             data[i].bookList = await Books.find({ 'bookshelf': data[i]._id })
         }
         res.json({
@@ -83,6 +81,10 @@ route.post('/change', async (req, res, next) => {
     } catch (e) {
         res.status(405).send(e.message);
     }
+})
+
+route.post('/transferBook', async (req, res, next) => {
+
 })
 
 export default route;

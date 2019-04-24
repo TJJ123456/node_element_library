@@ -21,7 +21,7 @@
     <el-col :span="4">
       <ul class="head-nav">
         <template v-if="$state.user">
-          <li style="width:100px;">
+          <li>
             <a>{{$state.user.username}}</a>
           </li>
           <li>
@@ -77,7 +77,7 @@ export default {
   font-size: 28px;
   color: white;
   text-align: center;
-  /* overflow: hidden; */
+  overflow: hidden; 
 }
 ul,
 ol {
