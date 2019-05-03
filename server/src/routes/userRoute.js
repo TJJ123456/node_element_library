@@ -1,4 +1,4 @@
-import { Users } from '../providers'
+import { Users, BorrowList } from '../providers'
 import express from 'express'
 const route = express.Router();
 import bcrypt from 'bcryptjs'
@@ -108,6 +108,9 @@ route.post('/list', async (req, res, next) => {
     const offset = req.body.offset;
     try {
         let data = await Users.find({}, { limit: limit, skip: offset });
+        for (let i in data) {
+            data[i].borrowcount = await BorrowList.count({ reader: data[i]._id });
+        }
         res.json({
             data: data
         });

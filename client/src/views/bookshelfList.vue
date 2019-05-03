@@ -9,7 +9,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" @click="handleManage(scope.$index, scope.row)">管理</el-button>
+            <el-button size="mini" @click="handleManager(scope.$index, scope.row)">管理</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -42,7 +42,11 @@
         <el-form>
           <el-form-item>
             <template>
-              <el-transfer :titles="['无书架书籍', '该书架书籍']" v-model="afterTransferList" :data="transferBookList"></el-transfer>
+              <el-transfer
+                :titles="['无书架书籍', '该书架书籍']"
+                v-model="afterTransferList"
+                :data="transferBookList"
+              ></el-transfer>
             </template>
           </el-form-item>
           <el-form-item>
@@ -66,11 +70,12 @@ export default {
       tableData: [],
       dialogFormVisible: false,
       managerBookshelfVisible: false,
-      bookshelfForm:{},
+      bookshelfForm: {},
       bookList: [],
       transferBookList: [],
       afterTransferList: [],
-      originList:[],
+      removeShelfList: [],
+      managerShelfId: 0,
       loading: false,
       dialogForm: {},
       dialogFormrules: {
@@ -118,43 +123,75 @@ export default {
       this.dialogFormVisible = true;
       this.dialogForm = this.tableData[index];
     },
-    async handleManage(index, row) {
+    async handleManager(index, row) {
       this.managerBookshelfVisible = true;
       this.transferBookList = [];
       this.afterTransferList = [];
-      this.originList = [];
-      for(let i in this.bookList) {
+      this.removeShelfList = [];
+      this.managerShelfId = this.tableData[index]._id;
+      for (let i in this.bookList) {
         const item = this.bookList[i];
-        if (item => item.bookshelf==='' || item.bookshelf === this.tableData[index]._id) {
+        if (
+          item =>
+            item.bookshelf === "" || item.bookshelf === this.managerShelfId
+        ) {
           this.transferBookList.push({
             key: i,
             label: item.name,
             id: item._id,
             shelf: item.bookshelf
-          })
-          if (item.bookshelf === this.tableData[index]._id) {
+          });
+          if (item.bookshelf === this.managerShelfId) {
             this.afterTransferList.push(i);
-            this.originList.push(i);
+            this.removeShelfList.push(i);
           }
         }
       }
     },
     async onChangeBookShelf() {
       this.loading = true;
-      let shelfList = [];
-      for(let i in this.afterTransferList) {
+      let addShelfList = [];
+      let removeShelfList = [];
+      for (let i = 0; i < this.afterTransferList.length; ++i) {
         let index = this.afterTransferList[i];
-        if (this.transferBookList[index].shelf === '') {
-          shelfList.push(this.transferBookList[index].id);
+        if (this.transferBookList[index].shelf === "") {
+          addShelfList.push(this.transferBookList[index].id);
         }
-        let tmp = this.originList.findIndex(index);
-        console.log(tmp);
-        if (tmp !== -1){
-          // this.originList.splice(tmp, 1);
+        let tmp = this.removeShelfList.findIndex(item => item === index);
+        if (tmp !== -1) {
+          this.removeShelfList.splice(tmp, 1);
         }
       }
-      console.log(shelfList);
-      console.log(this.originList);
+      for (let i = 0; i < this.removeShelfList.length; ++i) {
+        let index = this.removeShelfList[i];
+        removeShelfList.push(this.transferBookList[index].id);
+      }
+      let data = await this.$fetch("bookshelf/transferBook", {
+        method: "POST",
+        body: JSON.stringify({
+          bookshelfId: this.managerShelfId,
+          addShelfList: addShelfList,
+          removeShelfList: removeShelfList
+        })
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "管理书籍信息成功",
+          type: "success"
+        });
+        let index = this.tableData.findIndex(
+          item => item._id === this.managerShelfId
+        );
+        if (index !== -1) this.tableData[index] = data.data;
+        this.managerBookshelfVisible = false;
+      }
       this.loading = false;
     },
     async handleDelete(index, row) {
@@ -216,7 +253,7 @@ export default {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
       this.getList();
-    },
+    }
   }
 };
 </script>

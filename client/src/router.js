@@ -22,9 +22,11 @@ import home from './views/home.vue';
 
 import userhome from './userviews/userhome.vue';
 import userLayout from './userviews/userLayout.vue';
-import userPlanList from './userviews/userPlanList.vue';
+import userBookshelf from './userviews/userBookshelf.vue';
 import userLogin from './userviews/login.vue';
-import myOrder from './userviews/myOrder.vue';
+import search from './userviews/search.vue';
+import bookDetail from './userviews/bookDetail.vue'
+import userview from './userviews/userview.vue'
 
 const routes = [
     {
@@ -36,19 +38,33 @@ const routes = [
             meta: [],
         },
         {
-            path: '/home/userPlanList',
-            component: userPlanList,
+            path: '/home/userBookshelf',
+            component: userBookshelf,
             meta: [],
         },
         {
             path: '/home/login',
             component: userLogin,
             meta: [],
-        },
+        }, 
         {
-            path: '/home/myOrder',
-            component: myOrder,
+            path: '/home/userview',
+            component: userview,
             meta: [],
+        }, 
+        {
+            path: '/book/:bookId',
+            name: 'bookDetail',
+            component: bookDetail,
+            meta: [],
+            props: true
+        }, 
+        {
+            path: '/search/:keyword',
+            name: 'search',
+            component: search,
+            meta: [],
+            props: true
         },
         ]
     },

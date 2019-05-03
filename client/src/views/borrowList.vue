@@ -3,10 +3,10 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="书名"></el-table-column>
-        <el-table-column prop="desc" label="借书人"></el-table-column>
-        <el-table-column prop="price" label="结书时间"></el-table-column>
-        <el-table-column prop="price" label="截止时间"></el-table-column>
+        <el-table-column prop="bookname" label="书名"></el-table-column>
+        <el-table-column prop="readername" label="借书人"></el-table-column>
+        <el-table-column prop="borrow" label="借书时间"></el-table-column>
+        <el-table-column prop="back" label="还书时间"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -45,6 +45,8 @@
   </div>
 </template>
 <script>
+import moment from "moment";
+moment.locale("zh-cn");
 export default {
   data() {
     return {
@@ -67,27 +69,16 @@ export default {
     };
   },
   created() {
-    // this.initData();
+    this.initData();
   },
   activated() {
-    // this.GetListCount();
+    this.initData();
   },
   watch: {},
   methods: {
     async initData() {
-      // this.getList();
-      this.GetListCount();
-    },
-    async GetListCount() {
-      let data = await this.$fetch("spot/count");
-
-      if (data.data !== this.count) {
-        this.getList();
-        this.count = data.data;
-      }
-    },
-    async getList() {
-      let data = await this.$fetch("spot/list", {
+      this.loading = true;
+      let data = await this.$fetch("book/managerborrowlist", {
         method: "POST",
         body: JSON.stringify({
           limit: this.limit,
@@ -95,67 +86,53 @@ export default {
         })
       });
       this.tableData = data.data;
+      this.tableData.forEach(item => {
+        item.borrow = this.formatTime(item.borrowTime);
+        item.back =
+          item.backTime === 0 ? "未归还" : this.formatTime(item.backTime);
+      });
+      this.loading = false;
+    },
+    formatTime(time) {
+      return moment(time).format("LL");
     },
     handleEdit(index, row) {
-      console.log(this.tableData[index]);
-      this.dialogFormVisible = true;
-      this.dialogForm = this.tableData[index];
+      // this.dialogFormVisible = true;
+      // this.dialogForm = this.tableData[index];
     },
     async handleDelete(index, row) {
-      let data = await this.$fetch("spot/delete", {
-        method: "POST",
-        body: JSON.stringify({
-          id: this.tableData[index]._id
-        })
-      });
-      if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
-      } else {
-        this.$message({
-          showClose: true,
-          message: "删除景点成功",
-          type: "success"
-        });
-        this.tableData.splice(index, 1);
-      }
+      // let data = await this.$fetch("spot/delete", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     id: this.tableData[index]._id
+      //   })
+      // });
+      // if (data.err) {
+      //   this.$message({
+      //     showClose: true,
+      //     message: data.msg,
+      //     type: "error"
+      //   });
+      // } else {
+      //   this.$message({
+      //     showClose: true,
+      //     message: "删除景点成功",
+      //     type: "success"
+      //   });
+      //   this.tableData.splice(index, 1);
+      // }
     },
     onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.changeItem();
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     this.changeItem();
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
     },
-    async changeItem() {
-      let data = await this.$fetch("spot/change", {
-        method: "POST",
-        body: JSON.stringify(this.dialogForm)
-      });
-      if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
-      } else {
-        this.$message({
-          showClose: true,
-          message: "修改景点信息成功",
-          type: "success"
-        });
-        this.tableData[this.editIndex] = JSON.parse(
-          JSON.stringify(this.dialogForm)
-        );
-        this.dialogFormVisible = false;
-      }
-    },
+    async changeItem() {},
     handleCurrentChange(val) {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;

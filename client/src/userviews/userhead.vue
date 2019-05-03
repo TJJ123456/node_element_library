@@ -6,15 +6,13 @@
       </div>
       <ul class="head-nav">
         <li>
-          <router-link :to="{name: 'userindex'}">书架</router-link>
+          <router-link :to="{path: '/home/userBookshelf'}">书架</router-link>
         </li>
-        <li class="search">
-          <el-form>
-            <el-form-item label>
-              <input type="search" class="key">
-              <el-button class="go" type="primary" icon="el-icon-search">搜索</el-button>
-            </el-form-item>
-          </el-form>
+        <li class="search" style="width:250px;margin-left:60px">
+          <input type="search" class="key" v-model="keyword">
+        </li>
+        <li>
+          <el-button @click="search()" class="go" icon="el-icon-search">搜索</el-button>
         </li>
       </ul>
     </el-col>
@@ -22,7 +20,7 @@
       <ul class="head-nav">
         <template v-if="$state.user">
           <li>
-            <a>{{$state.user.username}}</a>
+            <router-link :to="{path: '/home/userview'}">{{$state.user.username}}</router-link>
           </li>
           <li>
             <a @click="logout">登出</a>
@@ -37,6 +35,11 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      keyword: ""
+    };
+  },
   methods: {
     test() {
       // console.log("111");
@@ -52,6 +55,13 @@ export default {
         message: "退出成功",
         type: "success"
       });
+    },
+    search() {
+      if (this.keyword !== "")
+        this.$router.replace({
+          name: "search",
+          params: { keyword: this.keyword }
+        });
     }
   }
 };
@@ -77,7 +87,7 @@ export default {
   font-size: 28px;
   color: white;
   text-align: center;
-  overflow: hidden; 
+  overflow: hidden;
 }
 ul,
 ol {
@@ -120,16 +130,14 @@ ol {
   padding-top: 0;
 }
 .go {
-  position: absolute;
-  right: -120px;
-  top: -3px;
-  z-index: 2;
-  width: 40px;
-  height: 38px;
+  // position: absolute;
+  // right: -120px;
+  // margin: auto 0;
+  margin-left: -10px;
   border: 0;
   font-size: 18px;
-  color: #3b5998;
-  opacity: 0.3;
+  color: white;
+  // opacity: 0.3;
   background-color: transparent;
 }
 </style>

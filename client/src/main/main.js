@@ -33,8 +33,7 @@ console.log(state.user);
 
 async function main() {
   try {
-    if (!state.user)
-      state.user = await $fetch('user');
+    state.user = await $fetch('user');
     if (!state.manager)
       state.manager = await $fetch('manager1');
   } catch (e) {
