@@ -4,7 +4,7 @@
     <div class="table_container">
       <el-row style="margin-top: 20px;">
         <el-col :span="14" :offset="4">
-          <header class="form_header">添加书本</header>
+          <header class="form_header">添加书本实例</header>
           <el-form
             :model="ruleForm"
             :rules="rules"
@@ -12,35 +12,18 @@
             label-width="110px"
             class="form food_form"
           >
-            <el-form-item label="书名" prop="name">
-              <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
+            <el-form-item label="书本">
+              <el-select v-model="ruleForm.bookId" placeholder="请选择书本">
+                <el-option v-for="(item, index) in bookList" :key="index" label="item.name" value="item._id">{{item.name}} </el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="摘要" prop="desc">
-              <el-input v-model="ruleForm.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="作者" prop="author">
-              <el-input v-model.number="ruleForm.author"></el-input>
-            </el-form-item>
-            <el-form-item label="出版社" prop="publisher">
-              <el-input v-model.number="ruleForm.publisher"></el-input>
-            </el-form-item>
-            <el-form-item label="书本种类">
-              <el-checkbox-group v-model="ruleForm.genre">
-                <el-checkbox
-                  v-for="(item, index) in genreList"
-                  :key="index"
-                  :label="item._id"
-                  :name="item._id"
-                >{{item.name}}</el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-            <!-- <el-form-item label="书本状态" prop="state">
+            <el-form-item label="书本状态" prop="state">
               <el-select v-model="ruleForm.state" placeholder="请选择书本状态">
                 <el-option label="维护" value="维护"></el-option>
                 <el-option label="可借阅" value="可借阅"></el-option>
               </el-select>
-            </el-form-item>-->
-            <!-- <template v-if="ruleForm.state==='可借阅'">
+            </el-form-item>
+            <template v-if="ruleForm.state==='可借阅'">
               <el-form-item label="所属书架">
                 <el-select v-model="ruleForm.bookshelf" placeholder="请选择书架">
                   <el-option
@@ -51,28 +34,10 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-            </template>-->
-            <el-form-item label="上传图片" prop="filepath">
-              <el-upload
-                class="avatar-uploader"
-                ref="upload"
-                action="http://localhost:3000/posts/img"
-                :before-upload="beforeUpload"
-                :on-success="uploadSuccess"
-                :limit="1"
-              >
-                <img
-                  v-if="ruleForm.filepath"
-                  :src="'http://localhost:3000' + ruleForm.filepath"
-                  class="avatar"
-                >
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10m</div>
-              </el-upload>
-            </el-form-item>
+            </template>
             <el-form-item>
               <el-row type="flex" justify="center">
-                <el-button type="primary" @click="onSubmit('ruleForm')">创建书本</el-button>
+                <el-button type="primary" @click="onSubmit('ruleForm')">添加书本实例</el-button>
               </el-row>
             </el-form-item>
           </el-form>
@@ -85,21 +50,16 @@
 export default {
   data() {
     return {
-      genreList: [],
+      bookList: [],
       bookshelfList: [],
       loading: true,
       ruleForm: {
-        name: "",
-        desc: "",
-        author: "",
-        publisher: "",
-        genre: [],
-        filepath: ""
-        // state: "",
-        // borrowtime: "",
-        // backtime: "",
-        // lendTimes: "",
-        // bookshelf: ""
+        bookId: "",
+        state: "",
+        borrowtime: "",
+        backtime: "",
+        lendTimes: "",
+        bookshelf: ""
       },
       rules: {
         name: [{ required: true, message: "请输入书本名称", trigger: "blur" }],
@@ -107,8 +67,8 @@ export default {
         author: [{ required: true, message: "请输入作者", trigger: "blur" }],
         publisher: [
           { required: true, message: "请输入出版社", trigger: "blur" }
-        ]
-        // state: [{ required: true, message: "请选择书本状态", trigger: "blur" }]
+        ],
+        state: [{ required: true, message: "请选择书本状态", trigger: "blur" }]
       }
     };
   },
@@ -118,9 +78,9 @@ export default {
   methods: {
     async initData() {
       this.loading = true;
-      let genreList = await this.$fetch("genre/list");
+      let bookList = await this.$fetch("book/list");
       let bookshelfList = await this.$fetch("bookshelf/list");
-      this.genreList = genreList.data;
+      this.bookList = bookList.data;
       this.bookshelfList = bookshelfList.data;
       this.loading = false;
     },
@@ -136,7 +96,7 @@ export default {
     },
     async createBook() {
       // console.log(JSON.stringify(this.ruleForm));
-      let data = await this.$fetch("book/create", {
+      let data = await this.$fetch("bookinstance/create", {
         method: "POST",
         body: JSON.stringify(this.ruleForm)
       });
@@ -149,11 +109,11 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "创建书本成功",
+          message: "添加书本实例成功",
           type: "success"
         });
         this.resetForm("ruleForm");
-        this.$router.push({ path: "/bookList" });
+        this.$router.push({ path: "/bookInstanceList" });
       }
     },
     resetForm(formName) {

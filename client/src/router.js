@@ -11,8 +11,9 @@ import mangerLogin from './components/mangerLogin.vue';
 import addBook from './views/addBook.vue';
 import addGenre from './views/addGenre.vue';
 import addBookshelf from './views/addBookshelf.vue';
-import addSpot from './views/addSpot.vue';
+import addBookInstance from './views/addBookInstance.vue';
 import bookList from './views/bookList.vue';
+import bookInstanceList from './views/bookInstanceList.vue';
 import bookshelfList from './views/bookshelfList.vue';
 import borrowList from './views/borrowList.vue';
 import genreList from './views/genreList.vue';
@@ -46,19 +47,19 @@ const routes = [
             path: '/home/login',
             component: userLogin,
             meta: [],
-        }, 
+        },
         {
             path: '/home/userview',
             component: userview,
             meta: [],
-        }, 
+        },
         {
             path: '/book/:bookId',
             name: 'bookDetail',
             component: bookDetail,
             meta: [],
             props: true
-        }, 
+        },
         {
             path: '/search/:keyword',
             name: 'search',
@@ -94,6 +95,14 @@ const routes = [
             path: '/bookList',
             component: bookList,
             meta: ['书籍管理', '书本列表'],
+        }, {
+            path: '/bookInstanceList',
+            component: bookInstanceList,
+            meta: ['书籍管理', '书本实例列表'],
+        }, {
+            path: '/addBookInstance',
+            component: addBookInstance,
+            meta: ['书籍管理', '添加书本实例'],
         }, {
             path: '/bookshelfList',
             component: bookshelfList,

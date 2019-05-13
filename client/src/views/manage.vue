@@ -12,6 +12,7 @@
             </template>
             <el-menu-item index="bookList">书籍列表</el-menu-item>
             <el-menu-item index="addbook">添加书本</el-menu-item>
+            <el-menu-item index="addBookInstance">添加书籍实例</el-menu-item>
             <el-menu-item index="borrowList">借阅列表</el-menu-item>
           </el-submenu>
           <el-submenu index="3">

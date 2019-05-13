@@ -9,6 +9,8 @@ const idIndex = {
 export const Users = modelFactory(collectionFactory('users', idIndex))
 //书本
 export const Books = modelFactory(collectionFactory('books', idIndex))
+//书本实例
+export const BookInstances = modelFactory(collectionFactory('bookinstances', idIndex))
 //书架
 export const BookShelf = modelFactory(collectionFactory('bookshelf', idIndex))
 //借阅表

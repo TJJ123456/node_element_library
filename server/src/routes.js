@@ -1,8 +1,9 @@
 import bookRoute from './routes/bookRoute';
 import bookshelfRoute from './routes/bookshelfRoute';
 import genreRoute from './routes/genreRoute';
-import planRoute from './routes/genreRoute222';
+import bookInstanceRoute from './routes/bookInstanceRoute';
 import userRoute from './routes/userRoute';
+import postRoute from './routes/postRoute';
 
 function privateRoute(req, res, next) {
   if (!req.user) {
@@ -24,6 +25,8 @@ export default function (app) {
   app.use('/genre', genreRoute);
   // app.use('/plan', planRoute);
   app.use('/user', userRoute);
+  app.use('/bookinstance', bookInstanceRoute);
+  app.use('/posts', postRoute);
 
   app.get('/manager1', (req, res) => {
     if (!req.session.manager) {

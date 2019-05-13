@@ -6,11 +6,11 @@
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column prop="publisher" label="出版社"></el-table-column>
-        <!-- <el-table-column prop="state" label="状态"></el-table-column>
-        <el-table-column prop="shelfname" label="书架"></el-table-column>-->
+        <el-table-column prop="state" label="状态"></el-table-column>
+        <el-table-column prop="shelfname" label="书架"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -25,48 +25,7 @@
         ></el-pagination>
       </div>
       <el-dialog title="修改书籍信息" :visible.sync="dialogFormVisible">
-        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm" v-loading="loading">
-          <el-form-item label="书名" prop="name">
-            <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="摘要" prop="desc">
-            <el-input v-model="dialogForm.desc"></el-input>
-          </el-form-item>
-          <el-form-item label="作者" prop="author">
-            <el-input v-model="dialogForm.author"></el-input>
-          </el-form-item>
-          <el-form-item label="出版社" prop="publisher">
-            <el-input v-model="dialogForm.publisher"></el-input>
-          </el-form-item>
-          <el-form-item label="书本种类">
-            <el-checkbox-group v-model="dialogForm.genre">
-              <el-checkbox
-                v-for="(item, index) in genreList"
-                :key="index"
-                :label="item._id"
-                :name="item._id"
-              >{{item.name}}</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="上传图片" prop="filepath">
-            <el-upload
-              class="avatar-uploader"
-              ref="upload"
-              action="http://localhost:3000/posts/img"
-              :before-upload="beforeUpload"
-              :on-success="uploadSuccess"
-              :limit="1"
-            >
-              <img
-                v-if="dialogForm.filepath"
-                :src="'http://localhost:3000' + dialogForm.filepath"
-                class="avatar"
-              >
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10m</div>
-            </el-upload>
-          </el-form-item>
-          <!-- <el-form-item label="书本状态" prop="state">
+          <el-form-item label="书本状态" prop="state">
             <el-select v-model="dialogForm.state" placeholder="请选择书本状态">
               <el-option label="维护" value="维护"></el-option>
               <el-option label="可借阅" value="可借阅"></el-option>
@@ -83,7 +42,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </template>-->
+          </template>
           <el-form-item>
             <el-row type="flex" justify="center">
               <el-button type="primary" @click="onSubmit('dialogForm')">提交修改</el-button>
@@ -120,9 +79,9 @@ export default {
       }
     };
   },
-  created() {
-    this.initData();
-  },
+  // created() {
+  //   this.initData();
+  // },
   activated() {
     this.GetListCount();
   },
@@ -146,7 +105,7 @@ export default {
       }
     },
     async getList() {
-      let data = await this.$fetch("book/list", {
+      let data = await this.$fetch("bookinstance/list", {
         method: "POST",
         body: JSON.stringify({
           limit: this.limit,
@@ -161,7 +120,7 @@ export default {
       this.dialogForm = JSON.parse(JSON.stringify(this.tableData[index]));
     },
     async handleDelete(index, row) {
-      let data = await this.$fetch("book/delete", {
+      let data = await this.$fetch("bookinstance/delete", {
         method: "POST",
         body: JSON.stringify({
           id: this.tableData[index]._id
@@ -176,70 +135,12 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "删除书本成功",
+          message: "删除书本实例成功",
           type: "success"
         });
         this.tableData.splice(index, 1);
       }
     },
-    onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.change();
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    async change() {
-      let data = await this.$fetch("book/change", {
-        method: "POST",
-        body: JSON.stringify(this.dialogForm)
-      });
-      if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
-      } else {
-        this.$message({
-          showClose: true,
-          message: "修改书本信息成功",
-          type: "success"
-        });
-        this.tableData[this.editIndex] = JSON.parse(
-          JSON.stringify(this.dialogForm)
-        );
-        this.dialogFormVisible = false;
-      }
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-      this.offset = (val - 1) * this.limit;
-      this.getList();
-    },
-    beforeUpload(file) {
-      console.log(file.type);
-      const isJPGorPng =
-        file.type === "image/jpg" ||
-        file.type === "image/png" ||
-        file.type === "image/jpeg";
-      const isLt10M = file.size / 1024 / 1024 < 10;
-      if (!isJPGorPng) {
-        this.$message.error("上传图片只能是 JPG/jpeg/png 格式!");
-      }
-      if (!isLt10M) {
-        this.$message.error("上传图片大小不能超过 10MB!");
-      }
-      return isJPGorPng && isLt10M;
-
-      return false;
-    },
-    uploadSuccess(res, file) {
-      this.ruleForm.filepath = res.filepath;
-    }
   }
 };
 </script>
