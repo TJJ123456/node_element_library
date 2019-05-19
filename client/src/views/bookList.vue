@@ -218,7 +218,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
-      this.getList();
+      // this.getList();
     },
     beforeUpload(file) {
       console.log(file.type);

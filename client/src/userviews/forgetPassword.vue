@@ -2,11 +2,7 @@
   <div>
     <el-row style="margin-top: 20px;">
       <el-col :span="14" :offset="4">
-        <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-          <el-tab-pane label="登陆" name="first"></el-tab-pane>
-          <el-tab-pane label="注册" name="second"></el-tab-pane>
-        </el-tabs>
-        <!-- <header class="form_header">{{title}}</header> -->
+        <header class="form_header">重设密码</header>
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -14,10 +10,10 @@
           label-width="110px"
           class="form food_form"
         >
-          <el-form-item label="用户名" prop="username">
+          <el-form-item v-if="mode==='checkusername'" label="用户名" prop="username">
             <el-input v-model="ruleForm.username" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="密保问题">
+          <el-form-item v-if="mode==='checkquestion'" label="密保问题">
             <el-select v-model.number="ruleForm.question" placeholder="请选择问题">
               <el-option
                 v-for="(item, index) in questionList"
@@ -27,19 +23,18 @@
               >{{item}}</el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="答案" prop="answer">
+          <el-form-item v-if="mode==='checkquestion'" label="答案" prop="answer">
             <el-input v-model="ruleForm.answer"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+          <el-form-item v-if="mode==='resetpassword'" label="新密码" prop="password">
             <el-input type="password" v-model="ruleForm.password"></el-input>
           </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="确认密码" prop="checkpassword">
+          <el-form-item v-if="mode==='resetpassword'" label="确认新密码" prop="checkpassword">
             <el-input type="password" v-model="ruleForm.checkpassword"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
               <el-button type="primary" @click="onSubmit('ruleForm')">{{title}}</el-button>
-              <el-button v-if="mode==='login'" type="info" @click="forgetPassword()">忘记密码</el-button>
             </el-row>
           </el-form-item>
         </el-form>
@@ -51,6 +46,7 @@
 export default {
   data() {
     var validateCheckPass = (rule, value, callback) => {
+      console.log("1111");
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (this.ruleForm.checkpassword !== this.ruleForm.password) {
@@ -72,8 +68,7 @@ export default {
     };
     return {
       questionList: [],
-      mode: "login",
-      activeName2: "first",
+      mode: "checkusername",
       ruleForm: {
         username: "",
         question: 0,
@@ -101,11 +96,14 @@ export default {
   computed: {
     title() {
       switch (this.mode) {
-        case "login":
-          return "登录";
-        case "signup":
-          return "注册";
+        case "checkusername":
+          return "下一步";
+        case "checkquestion":
+          return "下一步";
+        case "resetpassword":
+          return "设置新密码";
       }
+      // return "重设密码";
     }
   },
   methods: {
@@ -115,19 +113,28 @@ export default {
       this.questionList = question.data;
       this.loading = false;
     },
-    handleClick(tab, event) {
-      if (tab.index === "0") {
-        this.mode = "login";
-      } else {
-        this.mode = "signup";
-      }
-      console.log(this.mode);
-    },
     onSubmit(formName) {
+      if (this.mode === "resetpassword") {
+        if (this.ruleForm.password === "") {
+          this.$message({
+            showClose: true,
+            message: '请输入密码',
+            type: "error"
+          });
+          return;
+        } else if (this.ruleForm.checkpassword !== this.ruleForm.password) {
+          this.$message({
+            showClose: true,
+            message: '两次密码不一致',
+            type: "error"
+          });
+          return;
+        }
+      }
       this.$refs[formName].validate(valid => {
+        console.log(valid);
         if (valid) {
           this.operation();
-          //   alert("sumit");
         } else {
           console.log("error submit!!");
           return false;
@@ -137,15 +144,13 @@ export default {
     async operation() {
       await this[this.mode]();
     },
-    async login() {
-      const data = await this.$fetch("user/login", {
+    async checkusername() {
+      const data = await this.$fetch("user/checkusername", {
         method: "POST",
         body: JSON.stringify({
-          username: this.ruleForm.username,
-          password: this.ruleForm.password
+          username: this.ruleForm.username
         })
       });
-      console.log(data);
       if (data.err) {
         this.$message({
           showClose: true,
@@ -153,22 +158,31 @@ export default {
           type: "error"
         });
       } else {
-        this.$message({
-          showClose: true,
-          message: "登录成功",
-          type: "success"
-        });
-        this.$state.user = data;
-        localStorage.setItem("user", JSON.stringify(data));
-        if (this.$route.params.wantedRoute) {
-          this.$router.replace(this.$route.params.wantedRoute);
-        } else {
-          this.$router.replace("/");
-        }
+        this.mode = "checkquestion";
       }
     },
-    async signup() {
-      let data = await this.$fetch("user/signup", {
+    async checkquestion() {
+      let data = await this.$fetch("user/checkquestion", {
+        method: "POST",
+        body: JSON.stringify({
+          username: this.ruleForm.username,
+          // password: this.ruleForm.password,
+          question: this.ruleForm.question,
+          answer: this.ruleForm.answer
+        })
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.mode = "resetpassword";
+      }
+    },
+    async resetpassword() {
+      let data = await this.$fetch("user/resetpassword", {
         method: "POST",
         body: JSON.stringify({
           username: this.ruleForm.username,
@@ -184,24 +198,15 @@ export default {
           type: "error"
         });
       } else {
-        console.log("回调信息", data);
-        this.$message({
-          showClose: true,
-          message: "注册账号成功",
-          type: "success"
-        });
-        this.resetForm("ruleForm");
-        this.activeName2 = "first";
-        this.mode = "login";
+        await this.$refs["ruleForm"].resetFields();
+        // this.mode = "resetpassword";
+        this.$router.push({ path: "/home/login" });
       }
     },
     resetForm(formName) {
       this.$nextTick(() => {
         this.$refs[formName].resetFields();
       });
-    },
-    forgetPassword() {
-      this.$router.push({ path: "/home/forgetPassword" });
     }
   }
 };

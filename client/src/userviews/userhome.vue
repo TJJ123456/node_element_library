@@ -21,7 +21,7 @@
             <li v-for="(item, index) in showList" :key="index">
               <div class="book-img">
                 <router-link :to="{name: 'bookDetail', params: { bookId: item._id }}">
-                  <img src alt>
+                  <img :src="getImgPath(item.filepath)" alt>
                 </router-link>
               </div>
               <div class="book-info">
@@ -46,9 +46,9 @@ export default {
       showBook: true
     };
   },
-  created() {
-    this.initData();
-  },
+  // created() {
+  //   this.initData();
+  // },
   activated() {
     this.GetListCount();
   },
@@ -72,6 +72,10 @@ export default {
         this.getList();
         this.count = data.data;
       }
+    },
+    getImgPath(path) {
+      if (path && path !== "") return "http://localhost:3000" + path;
+      return "http://localhost:3000/public/img/default.jpg";
     },
     async getList() {
       let data = await this.$fetch("book/list", {

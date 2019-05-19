@@ -3,14 +3,12 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="author" label="作者"></el-table-column>
-        <el-table-column prop="publisher" label="出版社"></el-table-column>
+        <el-table-column prop="bookname" label="名称"></el-table-column>
         <el-table-column prop="state" label="状态"></el-table-column>
         <el-table-column prop="shelfname" label="书架"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -25,6 +23,7 @@
         ></el-pagination>
       </div>
       <el-dialog title="修改书籍信息" :visible.sync="dialogFormVisible">
+        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
           <el-form-item label="书本状态" prop="state">
             <el-select v-model="dialogForm.state" placeholder="请选择书本状态">
               <el-option label="维护" value="维护"></el-option>
@@ -59,6 +58,7 @@ export default {
     return {
       genreList: [],
       bookshelfList: [],
+      bookinstanceList: [],
       editIndex: 0,
       currentPage: 1,
       offset: 0,
@@ -83,6 +83,7 @@ export default {
   //   this.initData();
   // },
   activated() {
+    this.initData();
     this.GetListCount();
   },
   watch: {},
@@ -99,19 +100,13 @@ export default {
     },
     async GetListCount() {
       let data = await this.$fetch("book/count");
-      if (data.data !== this.count) {
-        this.getList();
-        this.count = data.data;
-      }
+      // if (data.data !== this.count) {
+      this.getList();
+      this.count = data.data;
+      // }
     },
     async getList() {
-      let data = await this.$fetch("bookinstance/list", {
-        method: "POST",
-        body: JSON.stringify({
-          limit: this.limit,
-          offset: this.offset
-        })
-      });
+      let data = await this.$fetch("bookinstance/list");
       this.tableData = data.data;
     },
     handleEdit(index, row) {
@@ -141,6 +136,43 @@ export default {
         this.tableData.splice(index, 1);
       }
     },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.offset = (val - 1) * this.limit;
+      // this.getList();
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.change();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    async change() {
+      let data = await this.$fetch("bookinstance/change", {
+        method: "POST",
+        body: JSON.stringify(this.dialogForm)
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "修改书本实例信息成功",
+          type: "success"
+        });
+        let data = await this.$fetch("bookinstance/list");
+        this.tableData = data.data;
+        this.dialogFormVisible = false;
+      }
+    }
   }
 };
 </script>

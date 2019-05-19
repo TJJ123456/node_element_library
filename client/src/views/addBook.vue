@@ -16,7 +16,7 @@
               <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="摘要" prop="desc">
-              <el-input v-model="ruleForm.desc"></el-input>
+              <el-input type="textarea" v-model="ruleForm.desc"></el-input>
             </el-form-item>
             <el-form-item label="作者" prop="author">
               <el-input v-model.number="ruleForm.author"></el-input>
@@ -33,6 +33,9 @@
                   :name="item._id"
                 >{{item.name}}</el-checkbox>
               </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="书本特色">
+              <el-input type="textarea" v-model="ruleForm.feature"></el-input>
             </el-form-item>
             <!-- <el-form-item label="书本状态" prop="state">
               <el-select v-model="ruleForm.state" placeholder="请选择书本状态">
@@ -94,17 +97,19 @@ export default {
         author: "",
         publisher: "",
         genre: [],
-        filepath: ""
+        filepath: "",
+        feature: "",
+        lendTimes: 0
         // state: "",
         // borrowtime: "",
         // backtime: "",
-        // lendTimes: "",
         // bookshelf: ""
       },
       rules: {
         name: [{ required: true, message: "请输入书本名称", trigger: "blur" }],
         desc: [{ required: true, message: "请输入书本摘要", trigger: "blur" }],
         author: [{ required: true, message: "请输入作者", trigger: "blur" }],
+        feature: [{ required: true, message: "请输入本书特色", trigger: "blur" }],
         publisher: [
           { required: true, message: "请输入出版社", trigger: "blur" }
         ]

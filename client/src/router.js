@@ -25,6 +25,7 @@ import userhome from './userviews/userhome.vue';
 import userLayout from './userviews/userLayout.vue';
 import userBookshelf from './userviews/userBookshelf.vue';
 import userLogin from './userviews/login.vue';
+import forgetPassword from './userviews/forgetPassword.vue';
 import search from './userviews/search.vue';
 import bookDetail from './userviews/bookDetail.vue'
 import userview from './userviews/userview.vue'
@@ -46,6 +47,11 @@ const routes = [
         {
             path: '/home/login',
             component: userLogin,
+            meta: [],
+        },
+        {
+            path: '/home/forgetPassword',
+            component: forgetPassword,
             meta: [],
         },
         {

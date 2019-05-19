@@ -13,8 +13,8 @@
             class="form food_form"
           >
             <el-form-item label="书本">
-              <el-select v-model="ruleForm.bookId" placeholder="请选择书本">
-                <el-option v-for="(item, index) in bookList" :key="index" label="item.name" value="item._id">{{item.name}} </el-option>
+              <el-select v-model="ruleForm.bookid" placeholder="请选择书本">
+                <el-option v-for="(item, index) in bookList" :key="index" :label="item.name" :value="item._id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="书本状态" prop="state">
@@ -54,11 +54,10 @@ export default {
       bookshelfList: [],
       loading: true,
       ruleForm: {
-        bookId: "",
+        bookid: "",
         state: "",
         borrowtime: "",
         backtime: "",
-        lendTimes: "",
         bookshelf: ""
       },
       rules: {

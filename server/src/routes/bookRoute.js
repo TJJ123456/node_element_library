@@ -14,7 +14,9 @@ route.post('/create', async (req, res, next) => {
             author: req.body.author,
             publisher: req.body.publisher,
             genre: req.body.genre,
-            filepath: req.body.filepath
+            filepath: req.body.filepath,
+            feature: req.body.feature,
+            lendTimes: req.body.lendTimes
         }
         const newDoc = await Books.insert(req.body);
         res.json({ status: 'ok' })
@@ -85,7 +87,9 @@ route.post('/change', async (req, res, next) => {
             author: req.body.author,
             publisher: req.body.publisher,
             genre: req.body.genre,
-            filepath: req.body.filepath
+            filepath: req.body.filepath,
+            feature: req.body.feature,
+            lendTimes: req.body.lendTimes,
         }
         let doc = await Books.update({ _id: id }, data);
         res.json({ status: 'ok' });

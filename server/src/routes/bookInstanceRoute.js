@@ -9,13 +9,13 @@ async function getByname(name) {
 route.post('/create', async (req, res, next) => {
     try {
         const data = {
-            name: req.body.name,
-            desc: req.body.desc,
-            author: req.body.author,
-            publisher: req.body.publisher,
-            genre: req.body.genre,
+            bookid: req.body.bookid,
+            state: req.body.state,
+            borrowtime: req.body.borrowtime,
+            backtime: req.body.backtime,
+            bookshelf: req.body.bookshelf,
         }
-        const newDoc = await Books.insert(req.body);
+        const newDoc = await BookInstances.insert(data);
         res.json({ status: 'ok' })
     } catch (e) {
         console.log(e.message);
@@ -25,7 +25,7 @@ route.post('/create', async (req, res, next) => {
 
 route.get('/count', async (req, res, next) => {
     try {
-        let data = await Books.count({});
+        let data = await BookInstances.count({});
         res.json({
             data: data
         });
@@ -39,11 +39,13 @@ route.post('/list', async (req, res, next) => {
     const limit = req.body.limit;
     const offset = req.body.offset;
     try {
-        let data = await Books.find({}, { limit: limit, skip: offset });
+        let data = await BookInstances.find({}, { limit: limit, skip: offset });
         for (let i = 0; i < data.length; ++i) {
             if (data[i].bookshelf !== '') {
                 let shelf = await BookShelf.findOne({ _id: data[i].bookshelf });
                 data[i].shelfname = shelf.name;
+                let book = await Books.findOne({ _id: data[i].bookid });
+                data[i].bookname = book.name;
             }
         }
         res.json({
@@ -56,11 +58,21 @@ route.post('/list', async (req, res, next) => {
 
 route.get('/list', async (req, res, next) => {
     try {
-        let data = await Books.find({});
+        let data = await BookInstances.find({});
+        for (let i = 0; i < data.length; ++i) {
+            if (data[i].bookshelf !== '') {
+                // console.log(data[i]);
+                let shelf = await BookShelf.findOne({ _id: data[i].bookshelf });
+                data[i].shelfname = shelf.name;
+            }
+            let book = await Books.findOne({ _id: data[i].bookid });
+            data[i].bookname = book.name;
+        }
         res.json({
             data: data
         });
     } catch (e) {
+        console.log(e.message);
         res.status(405).send(e.message);
     }
 })
@@ -68,7 +80,7 @@ route.get('/list', async (req, res, next) => {
 route.post('/delete', async (req, res, next) => {
     const id = req.body.id;
     try {
-        let data = await Books.removeOne({ _id: id });
+        let data = await BookInstances.removeOne({ _id: id });
         res.json({ status: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
@@ -78,32 +90,41 @@ route.post('/delete', async (req, res, next) => {
 route.post('/change', async (req, res, next) => {
     const id = req.body._id;
     try {
-        let data = await Books.update({ _id: id }, req.body);
+        let state = req.body.state;
+        let bookshelf = state === '维护' ? '' : req.body.bookshelf;
+        const doc = {
+            bookid: req.body.bookid,
+            state: req.body.state,
+            borrowtime: req.body.borrowtime,
+            backtime: req.body.backtime,
+            bookshelf: bookshelf,
+        }
+        let data = await BookInstances.update({ _id: id }, doc);
         res.json({ status: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
     }
 })
 
-route.post('/detail', async (req, res, next) => {
-    const id = req.body.id;
-    try {
-        let book = await Books.findOne({ _id: id });
-        if (book.bookshelf !== '') {
-            let shelf = await BookShelf.findOne({ _id: book.bookshelf });
-            book.shelfname = shelf.name;
-        }
-        book.genreNamelist = [];
-        for (let i = 0; i < book.genre.length; ++i) {
-            let doc = await Genres.findOne({ _id: book.genre[i] })
-            book.genreNamelist.push(doc.name);
-        }
-        let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
-        res.json({ book: book, borrowInfo: borrowInfo });
-    } catch (e) {
-        res.status(405).send(e.message);
-    }
-})
+// route.post('/detail', async (req, res, next) => {
+//     const id = req.body.id;
+//     try {
+//         let book = await Books.findOne({ _id: id });
+//         if (book.bookshelf !== '') {
+//             let shelf = await BookShelf.findOne({ _id: book.bookshelf });
+//             book.shelfname = shelf.name;
+//         }
+//         book.genreNamelist = [];
+//         for (let i = 0; i < book.genre.length; ++i) {
+//             let doc = await Genres.findOne({ _id: book.genre[i] })
+//             book.genreNamelist.push(doc.name);
+//         }
+//         let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
+//         res.json({ book: book, borrowInfo: borrowInfo });
+//     } catch (e) {
+//         res.status(405).send(e.message);
+//     }
+// })
 
 route.post('/borrow', async (req, res, next) => {
     const bookId = req.body.id;
@@ -113,13 +134,13 @@ route.post('/borrow', async (req, res, next) => {
         }
         let date = new Date();
         const data = {
-            book: bookId,
+            bookinstanceid: bookinstanceid,
             reader: req.session.user._id,
             borrowTime: date.getTime(),
             backTime: 0,//没还书就是0
         }
         const doc = await BorrowList.insert(data);
-        let upbook = await Books.updateOne({ _id: bookId }, { $set: { 'state': "已借出" } });
+        let upbook = await BookInstances.updateOne({ _id: bookId }, { $set: { 'state': "已借出" } });
         res.json({ book: upbook, borrowInfo: doc });
     } catch (e) {
         res.status(405).send(e.message);
