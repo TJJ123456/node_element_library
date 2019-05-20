@@ -1,50 +1,52 @@
 <template>
-  <div>
-    <el-row style="margin-top: 20px;">
-      <el-col :span="14" :offset="4">
-        <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-          <el-tab-pane label="登陆" name="first"></el-tab-pane>
-          <el-tab-pane label="注册" name="second"></el-tab-pane>
-        </el-tabs>
-        <!-- <header class="form_header">{{title}}</header> -->
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="110px"
-          class="form food_form"
-        >
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="ruleForm.username" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="密保问题">
-            <el-select v-model.number="ruleForm.question" placeholder="请选择问题">
-              <el-option
-                v-for="(item, index) in questionList"
-                :key="index"
-                :label="item"
-                :value="index"
-              >{{item}}</el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="答案" prop="answer">
-            <el-input v-model="ruleForm.answer"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="ruleForm.password"></el-input>
-          </el-form-item>
-          <el-form-item v-if="mode==='signup'" label="确认密码" prop="checkpassword">
-            <el-input type="password" v-model="ruleForm.checkpassword"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button type="primary" @click="onSubmit('ruleForm')">{{title}}</el-button>
-              <el-button v-if="mode==='login'" type="info" @click="forgetPassword()">忘记密码</el-button>
-            </el-row>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+  <div class="body">
+    <div class="m-header02">
+      <nav class="header02__area01">
+        <ul class="header02__area02">
+          <li class="header02__item01">
+            <a class="header02__lnk01">首页</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <h1 class="m-logo02 o-mt79 o-center">
+      <h1 style="color:#FF7F50">登陆</h1>
+    </h1>
+    <main id="main" class="o-mt81">
+      <div class="m-col-one01">
+        <div class="col-one01__body">
+          <div class="m-login-sec01 w910px o-clear">
+            <form>
+              <div class="m-mail-login01 login-top o-clear">
+                <div class="mail-login01__area01">
+                  <div class="mail-login01__item01">
+                    <input type="text" class="m-input06 font16px" placeholder="请输入用户名">
+                  </div>
+                  <div class="mail-login01__item01">
+                    <input type="password" class="m-input06 font16px" placeholder="请输入密码">
+                  </div>
+                  <p class="form01__alert-txt01">用户名或密码错误</p>
+                </div>
+                <p class="mail-login01__input02">
+                  <button class="m-btn-login01 _vdtSubmit">登陆</button>
+                </p>
+              </div>
+            </form>
+          </div>
+          <div class="m-sns-login01 login-top">
+            <h2 class="sns-login01__title01">使用外部帐户登录(别想了现在没有)</h2>
+            <ul class="sns-login01__area01">
+              <li class="sns-login01__item01">
+                <a class="m-btn-facebook01 o-replacement"></a>
+              </li>
+              <li class="sns-login01__item02">
+                <a class="m-btn-twitter01 o-replacement"></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 <script>
@@ -207,23 +209,242 @@ export default {
 };
 </script>
 <style lang="less">
-@import "../style/mixin";
-.form {
-  min-width: 400px;
-  margin-bottom: 30px;
+.m-header02 {
+  width: 960px;
+  position: relative;
+  margin: 27px auto 0;
+  text-align: right;
+  letter-spacing: -0.4em;
+}
+.header02__area02 .header02__item01:first-child {
+  margin: 0;
+  border: none;
+}
+.header02__item01 {
+  display: inline;
+  position: relative;
+  letter-spacing: normal;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+.header02__area02 .header02__item01:first-child {
+  margin: 0;
+  border: none;
+}
+.header02__item01 {
+  display: inline;
+  position: relative;
+  letter-spacing: normal;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+a:visited {
+  text-decoration: none;
+}
+.header02__lnk01 {
+  color: #404040;
+}
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  color: #2569ce;
+  text-decoration: none;
   &:hover {
-    box-shadow: 0 0 8px 0 rgba(232, 237, 250, 0.6),
-      0 2px 4px 0 rgba(232, 237, 250, 0.5);
-    border-radius: 6px;
-    transition: all 400ms;
+    cursor: pointer;
   }
 }
-.food_form {
-  border: 1px solid #eaeefb;
-  padding: 10px 10px 0;
+.body {
+  position: relative;
+  line-height: 1.5;
+  color: gray;
+  font-size: 12px;
 }
-.form_header {
+.m-logo02 {
+  height: 63px;
+}
+.o-center {
   text-align: center;
-  margin-bottom: 10px;
+}
+.o-mt79 {
+  margin-top: 79px !important;
+}
+#main {
+  position: inherit;
+  z-index: 1;
+}
+.o-mt81 {
+  margin-top: 81px !important;
+}
+.m-col-one01 {
+  width: 100%;
+  min-width: 960px;
+}
+.col-one01__body {
+  position: relative;
+  width: 960px;
+  margin: 0 auto;
+}
+.m-login-sec01.w910px {
+  width: 910px;
+}
+
+.m-login-sec01 {
+  margin: 0 auto;
+}
+.m-mail-login01.login-top {
+  width: 432px;
+  padding-right: 23px;
+  float: left;
+  border-right: 1px solid #e4e4e4;
+}
+.m-mail-login01 {
+  position: relative;
+}
+.m-mail-login01.login-top
+  .mail-login01__area01
+  .mail-login01__item01:first-child {
+  margin-top: 0;
+}
+.m-input06.font16px {
+  font-size: 16px;
+}
+input[type="text"],
+input[type="email"],
+input[type="number"] {
+  font-size: 12px;
+}
+.m-input06 {
+  width: 430px;
+  padding: 11px 0 11px 18px;
+  border-top: 1px solid #c6c6c6;
+  border-left: 1px solid #c6c6c6;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+  color: #404040;
+  background: #f7f7f7;
+  -webkit-appearance: none;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1) inset;
+}
+input,
+select {
+  vertical-align: middle;
+  margin: 0;
+}
+input,
+select,
+textarea {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 100%;
+  font-family: inherit;
+}
+.m-mail-login01.login-top .mail-login01__area01 .mail-login01__item01 {
+  margin-top: 10px;
+}
+.form01__alert-txt01 {
+  color: #f11;
+  font-size: 12px;
+}
+.m-mail-login01.login-top .mail-login01__input02 {
+  float: right;
+  margin-top: 10px;
+}
+.m-btn-login01 {
+  background: none;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  *zoom: 1;
+  *display: inline;
+  cursor: pointer;
+  background-color: transparent;
+  width: 177px;
+  height: 55px;
+  background-position: 0 -2941px;
+  font-size: 24px;
+  border: #404040 1px solid;
+  box-shadow: 1px 1px 5px #888888;
+}
+.m-sns-login01.login-top {
+  width: 430px;
+  float: left;
+  display: inline;
+  padding-left: 24px;
+}
+.sns-login01__title01 {
+  font-size: 14px;
+  color: #404040;
+  font-weight: normal;
+}
+.m-sns-login01.login-top .sns-login01__area01 {
+  margin-top: 13px;
+}
+.sns-login01__area01 {
+  min-height: 59px;
+  margin: 17px 0 0 -4px;
+  position: relative;
+}
+.sns-login01__item01 {
+  left: 0;
+  top: 0;
+}
+.sns-login01__item01,
+.sns-login01__item02 {
+  position: absolute;
+}
+a:visited {
+  text-decoration: none;
+}
+.m-btn-facebook01 {
+  background: none;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  *zoom: 1;
+  *display: inline;
+  cursor: pointer;
+  background-color: transparent;
+  background-image: url(//secure-images.comico.jp/r02/spbtn-scc408e891c.png);
+  width: 215px;
+  height: 55px;
+  background-position: 0 -2226px;
+}
+.o-replacement {
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+}
+.m-sns-login01.login-top .sns-login01__item02 {
+  left: 220px;
+  top: 0;
+}
+
+.sns-login01__item01,
+.sns-login01__item02 {
+  position: absolute;
+}
+.m-btn-twitter01 {
+  background: none;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  *zoom: 1;
+  *display: inline;
+  cursor: pointer;
+  background-color: transparent;
+  background-image: url(//secure-images.comico.jp/r02/spbtn-scc408e891c.png);
+  width: 219px;
+  height: 59px;
+  background-position: 0 -4256px;
 }
 </style>

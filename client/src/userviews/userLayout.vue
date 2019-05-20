@@ -1,6 +1,6 @@
 <template>
   <div>
-    <userhead/>
+    <!-- <userhead/> -->
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
