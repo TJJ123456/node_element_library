@@ -98,25 +98,21 @@ route.post('/change', async (req, res, next) => {
     }
 })
 
-// route.post('/detail', async (req, res, next) => {
-//     const id = req.body.id;
-//     try {
-//         let book = await Books.findOne({ _id: id });
-//         if (book.bookshelf !== '') {
-//             let shelf = await BookShelf.findOne({ _id: book.bookshelf });
-//             book.shelfname = shelf.name;
-//         }
-//         book.genreNamelist = [];
-//         for (let i = 0; i < book.genre.length; ++i) {
-//             let doc = await Genres.findOne({ _id: book.genre[i] })
-//             book.genreNamelist.push(doc.name);
-//         }
-//         let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
-//         res.json({ book: book, borrowInfo: borrowInfo });
-//     } catch (e) {
-//         res.status(405).send(e.message);
-//     }
-// })
+route.post('/detail', async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        let book = await Books.findOne({ _id: id });
+        book.genreNamelist = [];
+        for (let i = 0; i < book.genre.length; ++i) {
+            let doc = await Genres.findOne({ _id: book.genre[i] })
+            book.genreNamelist.push(doc.name);
+        }
+        // let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
+        res.json({ book: book, borrowInfo: borrowInfo });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
 
 // route.post('/borrow', async (req, res, next) => {
 //     const bookId = req.body.id;

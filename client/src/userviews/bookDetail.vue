@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="7">
           <div class="book-img">
-            <img src alt>
+            <img :src="getImgPath(bookDetail.filepath)" alt>
             <div style="margin-top:10px">
               <button v-if="checkBorrowIsMe" @click="backBook()" class="back">我要还书</button>
               <button v-else-if="bookDetail.state==='可借阅'" @click="borrow()" class="borrow">我要借阅</button>
@@ -30,7 +30,7 @@
             <span>所属书架：{{bookDetail.shelfname}}</span>
           </div>
           <div style="margin-top:10px;">
-            <span>借阅次数：{{bookDetail.borrowTime || 0}}</span>
+            <span>借阅次数：{{bookDetail.borrowTimes || 0}}</span>
           </div>
         </el-col>
       </el-row>
@@ -55,15 +55,15 @@ export default {
   },
   computed: {
     checkBorrowIsMe() {
-      console.log(this.bookDetail.state, this.borrowInfo);
-      if (
-        this.bookDetail.state !== "可借阅" &&
-        this.borrowInfo &&
-        this.$state.user &&
-        this.borrowInfo.reader === this.$state.user._id
-      ) {
-        return true;
-      }
+      // console.log(this.bookDetail.state, this.borrowInfo);
+      // if (
+      //   this.bookDetail.state !== "可借阅" &&
+      //   this.borrowInfo &&
+      //   this.$state.user &&
+      //   this.borrowInfo.reader === this.$state.user._id
+      // ) {
+      //   return true;
+      // }
       return false;
     }
   },
@@ -77,8 +77,12 @@ export default {
         })
       });
       this.bookDetail = book.book;
-      this.borrowInfo = book.borrowInfo;
+      // this.borrowInfo = book.borrowInfo;
       this.loading = false;
+    },
+    getImgPath(path) {
+      if (path && path !== "") return "http://localhost:3000" + path;
+      return "http://localhost:3000/public/img/default.jpg";
     },
     async borrow() {
       let data = await this.$fetch("book/borrow", {
