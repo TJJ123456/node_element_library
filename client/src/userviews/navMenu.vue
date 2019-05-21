@@ -1,23 +1,23 @@
 <template>
-  <el-row class="nav">
-    <el-col :span="6" :offset="6">
-      <el-menu :default-active="defaultActive" mode="horizontal" router>
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/home/userPlanList">计划列表</el-menu-item>
-      </el-menu>
-    </el-col>
-    <el-col :span="4" :offset="8">
-      <template v-if="$state.user">
-        <el-menu :default-active="defaultActive" mode="horizontal" router>
-          <el-menu-item index="/home/myOrder">我的订单</el-menu-item>
-          <el-menu-item @click="logout()">登出</el-menu-item>
-        </el-menu>
-      </template>
-      <el-menu v-else :default-active="defaultActive" mode="horizontal" router>
-        <el-menu-item index="/home/login">登录</el-menu-item>
-      </el-menu>
-    </el-col>
-  </el-row>
+  <div class="comico-global-header02__wrapper _globalHeader">
+    <nav class="comico-global-header02__sub">
+      <div
+        class="comico-global-header02__sub-category _globalHeaderSubCategory comico-global-header__sub-category--flex"
+        style="opacity: 1;"
+      >
+        <div class="comico-global-header02__sub-category-inner">
+          <ul class="comico-global-header02__sub-category-list">
+            <li class="comico-global-header02__sub-category-item">
+              <a class="comico-global-header02__sub-category-item-inner">排行</a>
+            </li>
+            <li class="comico-global-header02__sub-category-item">
+              <a class="comico-global-header02__sub-category-item-inner">类型</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
 </template>
 <script>
 export default {
@@ -42,10 +42,4 @@ export default {
 };
 </script>
 <style scoped>
-.nav {
-  border-bottom: solid 1px #e6e6e6;
-}
-.el-menu.el-menu--horizontal {
-  border-bottom: none;
-}
 </style>

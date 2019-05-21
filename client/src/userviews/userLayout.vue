@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <!-- <userhead/> -->
-    <keep-alive>
+  <div class="stage">
+    <div class="stage__body stage__body--fixed-header2">
       <router-view></router-view>
-    </keep-alive>
+    </div>
   </div>
 </template>
 <script>
@@ -14,3 +13,11 @@ export default {
   components: { userhead, navMenu }
 };
 </script>
+<style lang="less">
+.stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+}
+</style>
