@@ -88,13 +88,8 @@
               <li class="ul-card__ranking-list1-item">
                 <div class="ui-card__figure2 ui-card__figure2--type2">
                   <a class="ui-card__figure2-inner">
-                    <img
-                      src="//images.comico.jp/spn/blank/img_1x1.png"
-                      alt
-                      class="ui-card__figure2-layout"
-                      width="100%"
-                    >
-                    <figure class="ui-card__figure2-figure">
+                    <img src="//images.comico.jp/spn/blank/img_1x1.png" alt>
+                    <figure class="ui-card__figure2-inner">
                       <div class="ui-card__figure2-media">
                         <div class="cover-thumb03 cover-thumb03--flex">
                           <div class="cover-thumb03__inner">
@@ -110,7 +105,11 @@
                       <figcaption class="ui-card__figure2-caption">
                         <div class="ui-card__figure2-caption-inner">
                           <div class="ui-card__figure2-caption-group1">
-                            <p class="ui-card__figure2-rank"></p>
+                            <p class="ui-card__figure2-rank">1</p>
+                          </div>
+                          <div class="ui-card__figure2-caption-group2">
+                            <p class="ui-card__figure2-heading">书名</p>
+                            <p class="ui-card__figure2-sub-copy">作者</p>
                           </div>
                         </div>
                       </figcaption>
@@ -118,11 +117,16 @@
                   </a>
                 </div>
               </li>
+              <li class="ul-card__ranking-list1-item"></li>
+              <li class="ul-card__ranking-list1-item"></li>
+              <li class="ul-card__ranking-list1-item"></li>
+              <li class="ul-card__ranking-list1-item"></li>
             </ul>
           </div>
         </div>
       </section>
     </div>
+    <userfoot/>
   </div>
 </template>
   
@@ -559,22 +563,7 @@ main {
   transform: translateY(1px);
   display: none;
 }
-@media screen and (min-width: 1080px) {
-  .ui-card .ui-card__header .ui-card__header-icon .ui-card__header-icon-label {
-    display: inline-block;
-    font-size: 14px;
-    -moz-transform: translateY(0);
-    -ms-transform: translateY(0);
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-  }
-}
-@media screen and (min-width: 1080px) {
-  .ui-card-wrapper.ui-card-wrapper--bg-lightblue .ui-card__header-icon-label,
-  .ui-card-wrapper.ui-card-wrapper--bg-lightblue .ui-card__header {
-    color: #fff;
-  }
-}
+
 .ui-card .ui-card__body {
   margin-top: 9px;
 }
@@ -587,6 +576,7 @@ main {
     padding: 0;
   }
 }
+
 .ul-card__ranking .ul-card__ranking-list1 {
   display: table;
   table-layout: fixed;
@@ -605,16 +595,29 @@ main {
   width: 215px\9;
   height: 215px;
 }
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+}
+
 @media screen and (min-width: 1080px) {
   .ul-card__ranking .ul-card__ranking-list1-item {
     padding-right: 1px;
   }
 }
+
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
 .ui-card__figure2 {
   position: relative;
-}
-.ul-card__ranking .ul-card__ranking-list1-item .ui-card__figure2-inner {
-  padding-bottom: 0;
 }
 .ul-card__ranking .ul-card__ranking-list1-item .ui-card__figure2-inner {
   padding-bottom: 0;
@@ -624,18 +627,9 @@ main {
   position: relative;
   min-height: 142px;
 }
+
 .ui-card a {
   color: inherit;
-}
-
-a {
-  margin: 0;
-  padding: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
-  color: #2569ce;
-  text-decoration: none;
 }
 .ui-card__figure2 .ui-card__figure2-layout {
   width: 100%;
@@ -647,6 +641,80 @@ a {
   right: 0;
   bottom: 0;
   margin: auto;
+}
+.cover-thumb03.cover-thumb03--flex .cover-thumb03__inner {
+  display: block;
+}
+.cover-thumb03 .cover-thumb03__inner {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+}
+.cover-thumb03 .cover-thumb03__image {
+  height: 100%;
+  width: 100%;
+  background: 50% 50% no-repeat #fff;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  position: relative;
+}
+.cover-thumb03.cover-thumb03--flex .cover-thumb03__image > img {
+  width: 100%;
+}
+
+.ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-caption {
+  background: transparent;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…Igd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g);
+  background-size: 100%;
+  background-image: -webkit-gradient(
+    linear,
+    50% 0%,
+    50% 100%,
+    color-stop(0%, rgba(0, 0, 0, 0)),
+    color-stop(100%, rgba(0, 0, 0, 0.6))
+  );
+  background-image: -moz-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+  background-image: -webkit-linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.6)
+  );
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+  color: #fff;
+  padding: 9px 7px 5px;
+}
+
+.ui-card__figure2 .ui-card__figure2-caption {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…Igd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g);
+  background-size: 100%;
+  background-image: -webkit-gradient(
+    linear,
+    50% 0%,
+    50% 100%,
+    color-stop(0%, rgba(0, 0, 0, 0)),
+    color-stop(100%, rgba(0, 0, 0, 0.6))
+  );
+  background-image: -moz-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+  background-image: -webkit-linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.6)
+  );
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 7px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media screen and (min-width: 1080px) {
+  .ui-card__figure2 .ui-card__figure2-caption {
+    padding: 7px 10px;
+  }
 }
 @media screen and (min-width: 1080px) {
   .ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-caption {
@@ -670,7 +738,6 @@ a {
     padding-right: 10px;
   }
 }
-
 .ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-rank,
 .ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-heading,
 .ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-sub-copy {
@@ -687,16 +754,45 @@ a {
     font-size: 50px;
   }
 }
-.cover-thumb03.cover-thumb03--flex .cover-thumb03__image > img {
-  // width: 100%;
-}
-
-img {
-  -ms-interpolation-mode: bicubic;
+.ui-card__figure2 .ui-card__figure2-caption-group2 {
+  display: table-cell;
   vertical-align: middle;
 }
-.ui-card .ui-card__body {
-  margin-top: 9px;
+.ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-rank,
+.ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-heading,
+.ui-card__figure2.ui-card__figure2--type2 .ui-card__figure2-sub-copy {
+  color: inherit;
 }
-
+.ui-card__figure2 .ui-card__figure2-heading {
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  text-rendering: auto;
+}
+@media screen and (min-width: 1080px) {
+  .ui-card__figure2 .ui-card__figure2-heading {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+}
+.ui-card__figure2 .ui-card__figure2-sub-copy {
+  color: #fff;
+  font-size: 11px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media screen and (min-width: 1080px) {
+  .ui-card__figure2 .ui-card__figure2-sub-copy {
+    font-size: 12px;
+    margin-top: -2px;
+  }
+}
 </style>

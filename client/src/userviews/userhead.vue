@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div class="comico-global-header02__wrapper _globalHeader">
+    <div class="comico-global-header02__wrapper _globalHeader" v-if="!checkMyView">
       <nav class="comico-global-header02__sub">
         <div
           class="comico-global-header02__sub-category _globalHeaderSubCategory comico-global-header__sub-category--flex"
@@ -68,6 +68,11 @@ export default {
     return {
       keyword: ""
     };
+  },
+  computed: {
+    checkMyView() {
+      return this.$route.name === "bookDetail";
+    }
   },
   methods: {
     test() {
