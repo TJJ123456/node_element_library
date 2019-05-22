@@ -62,6 +62,7 @@ const routes = [
         },
         {
             path: '/home/userview',
+            name: 'myview',
             component: userview,
             meta: [],
         },
