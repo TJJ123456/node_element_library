@@ -38,7 +38,7 @@ async function hashPassword(password) {
     return await bcrypt.hash(password, SALT_ROUNDS)
 }
 
-async function createUser({ username, password, question, answer }) {
+async function createUser({ username, password, question, answer, sex }) {
     const user = await getByUsername(username)
     if (user) {
         throw new Error('用户名已注册')
@@ -50,6 +50,7 @@ async function createUser({ username, password, question, answer }) {
             password: hash,
             question,
             answer,
+            sex,
             createTime: time.getTime(),
         })
         return result
@@ -72,6 +73,7 @@ route.post('/resetpassword', async (req, res, next) => {
         const question = req.body.question;
         const answer = req.body.answer;
         const password = req.body.password;
+        const sex = req.body.sex;
         const user = await getByUsername(username);
         if (user) {
             const hash = await hashPassword(password)

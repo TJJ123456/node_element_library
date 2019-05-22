@@ -15,10 +15,12 @@ route.post('/create', async (req, res, next) => {
             publisher: req.body.publisher,
             genre: req.body.genre,
             filepath: req.body.filepath,
-            feature: req.body.feature,
-            lendTimes: req.body.lendTimes
+            lendTimes: req.body.lendTimes,
+            maleClick: 0,
+            femaleClick: 0,
+            allClick: 0,
         }
-        const newDoc = await Books.insert(req.body);
+        const newDoc = await Books.insert(data);
         res.json({ status: 'ok' })
     } catch (e) {
         console.log(e.message);
@@ -88,8 +90,10 @@ route.post('/change', async (req, res, next) => {
             publisher: req.body.publisher,
             genre: req.body.genre,
             filepath: req.body.filepath,
-            feature: req.body.feature,
             lendTimes: req.body.lendTimes,
+            maleClick: req.body.maleClick,
+            femaleClick: req.body.femaleClick,
+            allClick: req.body.allClick,
         }
         let doc = await Books.update({ _id: id }, data);
         res.json({ status: 'ok' });
@@ -102,6 +106,15 @@ route.post('/detail', async (req, res, next) => {
     const id = req.body.id;
     try {
         let book = await Books.findOne({ _id: id });
+        if (req.session.user) {
+            if (req.session.user.sex === 0) {
+                book.maleClick++;
+            } else {
+                book.femaleClick++;
+            }
+        }
+        book.allClick++;
+        await Books.updateOne({ _id: id }, book);
         book.genreNamelist = [];
         for (let i = 0; i < book.genre.length; ++i) {
             let doc = await Genres.findOne({ _id: book.genre[i] })
