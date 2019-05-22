@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     checkMyView() {
-      return this.$route.name === "bookDetail";
+      return this.$route.name === "bookDetail" || this.$route.name === "search";
     }
   },
   methods: {

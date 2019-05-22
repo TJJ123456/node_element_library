@@ -1,7 +1,7 @@
 <template>
   <div>
     <userhead/>
-    <div class="stage__body stage__body--fixed-header1">
+    <div class="stage__body stage__body--fixed-header1" >
       <div class="article-hero08">
         <div class="article-hero08__bg-image">
           <div class="article-hero08__inner">
@@ -27,8 +27,166 @@
                     <p class="article-hero08__publisher">出版社</p>
                   </li>
                 </ul>
+                <ul class="article-hero08__list-genre">
+                  <li class="article-hero08__list-genre-item">
+                    <p class="article-hero08__genre">种类</p>
+                  </li>
+                  <li class="article-hero08__list-genre-item">
+                    <p class="article-hero08__genre">种类</p>
+                  </li>
+                </ul>
+                <div class="article-hero08__description">
+                  <div class="article-hero08__description-inner">
+                    <p
+                      class="_description"
+                      style="opacity: 1;"
+                    >喜欢它的孩子总是去童年友好的帅哥Sunagawa，但它是直的，笨拙和麻木不仁的，男孩是超级巨大的！一天早上他从一个通勤火车的骚扰者中拯救了一个女孩即使是坚强的人也是对春天到来的预感......！？笑声和哭泣，充满了胸部的Kyun，热闹的纯爱情喜剧！</p>
+                  </div>
+                </div>
+                <ul class="article-hero08__list-meta" style="margin-top:25px;">
+                  <li class="article-hero08__list-meta-item">
+                    <p class="article-hero08__author">未借阅数量</p>
+                  </li>
+                </ul>
+                <ul class="article-hero08__action">
+                  <li class="article-hero08__action-item o-large-screen-object">
+                    <a class="btn03 btn03--large btn03--special">借阅</a>
+                  </li>
+                </ul>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sort-bar05 sort-bar05--t01">
+          <div class="sort-bar05__inner">
+            <p class="sort-bar05__heading sort-bar05__heading--t01">相关图书</p>
+          </div>
+        </div>
+        <div class="list-article04">
+          <div class="list-article04__inner">
+            <ul class="list-article04__list _articleList full-size-list">
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-article04__item full-size-item">
+                <a href="list-article04__item-inner">
+                  <div class="list-article04__cover">
+                    <div class="list-article04__cover-inner-full">
+                      <span class="auto-size-cnt">
+                        <img
+                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          alt
+                          class="list-article04__cover-full"
+                        >
+                        <p class="list-article04__work-title _listTitle">书名</p>
+                        <p class="list-article04__label2">作者</p>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -139,7 +297,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .stage .stage__body.stage__body--fixed-header1 {
   margin-top: -48px;
 }
@@ -360,11 +518,541 @@ export default {
   }
 }
 
-p {
+// p {
+//   display: block;
+//   margin-block-start: 1em;
+//   margin-block-end: 1em;
+//   margin-inline-start: 0px;
+//   margin-inline-end: 0px;
+// }
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__list-genre {
+    margin-bottom: 16px;
+    font-size: 0;
+  }
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__list-genre-item {
+    font-size: 16px;
+    margin-right: 12px;
+  }
+  .article-hero08 .article-hero08__list-genre-item {
+    font-size: 13px;
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__genre {
+    text-decoration: underline;
+  }
+}
+.article-hero08 .article-hero08__description {
+  display: none;
+  margin-top: 24px;
+  position: relative;
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__description {
+    display: block;
+  }
+}
+.article-hero08
+  .article-hero08__description
+  .article-hero08__description-inner {
+  font-size: 14px;
+  line-height: 1.6;
+  max-height: 70px;
+  overflow: hidden;
+  position: relative;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  -webkit-transition-property: all;
+  transition-property: all;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -moz-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  -o-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.article-hero08 .article-hero08__action {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 0;
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__action {
+    right: auto;
+    left: 40px;
+    width: 100%;
+  }
+}
+.article-hero08
+  .article-hero08__action
+  .article-hero08__action-item:first-child {
+  margin-left: 0;
+}
+
+.article-hero08 .article-hero08__action .article-hero08__action-item {
+  display: inline-block;
+  margin-left: 16px;
+  vertical-align: middle;
+  position: relative;
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08 .article-hero08__action .article-hero08__action-item {
+    margin-left: 24px;
+  }
+}
+
+.article-hero08
+  .article-hero08__action
+  .article-hero08__action-item
+  .btn03.btn03--large {
+  background: none;
+}
+.btn03.btn03--special {
+  border-color: #f40009;
+  color: #f40009;
+  font-weight: 500;
+}
+.btn03.btn03--large {
+  padding: 9px 20px;
+  font-size: 14px;
+}
+.article-hero08 a {
+  color: inherit;
+}
+.btn03 {
+  display: inline-block;
+  font-size: 13px;
+  padding: 6px 23px;
+  border: 1px solid #ced4da;
+  color: #495057;
+  border-radius: 40px;
+  background: #fff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  text-align: center;
+  min-width: 33px;
+  position: relative;
+  line-height: 1.67;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@media screen and (min-width: 1080px) {
+  .article-hero08
+    .article-hero08__action
+    .article-hero08__action-item
+    .btn03.btn03--large {
+    border-width: 2px;
+    min-width: 200px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+.article-hero08
+  .article-hero08__action
+  .article-hero08__action-item
+  .btn03.btn03--large:hover {
+  opacity: 0.6;
+}
+.sort-bar05 {
+  text-align: right;
+  margin: 20px 0 0;
+  position: relative;
+  z-index: 2;
+}
+@media screen and (min-width: 1080px) {
+  .sort-bar05.sort-bar05--t01 {
+    padding: 0;
+    margin: 36px 0 32px;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .sort-bar05 {
+    padding: 0;
+    margin: 28px 0 24px;
+  }
+}
+.sort-bar05 .sort-bar05__inner {
+  *zoom: 1;
+  max-width: 1080px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0 16px 16px;
+  border-bottom: 1px solid rgba(222, 226, 230, 0.6);
+}
+@media screen and (min-width: 1080px) {
+  .sort-bar05.sort-bar05--t01 .sort-bar05__inner {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .sort-bar05 .sort-bar05__inner {
+    padding: 0 0 16px;
+  }
+}
+.sort-bar05 .sort-bar05__heading {
+  float: left;
+  line-height: 1;
+  font-size: 13px;
+  color: #212529;
+  font-weight: normal;
+  position: relative;
+  height: 13px;
+}
+@media screen and (min-width: 1080px) {
+  .sort-bar05 .sort-bar05__heading.sort-bar05__heading--t01 {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .sort-bar05 .sort-bar05__heading {
+    font-size: 16px;
+    height: 16px;
+  }
+}
+.list-article04 {
+  font-size: 12px;
+  color: #222;
+  max-width: 1096px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 auto 0;
+  background: #fff;
+  padding-top: 20px;
+}
+@media screen and (min-width: 1080px) {
+  .list-article04 {
+    margin: 24px auto 0;
+    padding-top: 0;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 {
+    background: transparent;
+  }
+}
+.list-article04 .list-article04__list.full-size-list {
+  clear: both;
+  overflow: hidden;
+  padding: 0 8px;
+}
+.list-article04 .list-article04__list {
+  *zoom: 1;
+  padding: 0 8px;
+}
+
+.list-article04 .list-article04__item:nth-child(3n + 1) {
+  clear: both;
+}
+.list-article04 .list-article04__item.full-size-item {
+  display: inline-block;
+  text-align: left;
+  padding: 0 10px;
+}
+.list-article04 .list-article04__item {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  float: left;
+  width: 33%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item.full-size-item:nth-child(4n + 1) {
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__list.full-size-list .full-size-item {
+    width: 202px;
+    margin: 0 17.5px 20px 0;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__item:nth-child(4n + 1),
+  .list-article04 .list-article04__item:nth-child(3n + 1),
+  .list-article04 .list-article04__item:nth-child(2n + 1) {
+    clear: none;
+  }
+}
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__list.full-size-list {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__list {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item.full-size-item:nth-child(4n + 1) {
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__list.full-size-list .full-size-item {
+    width: 202px;
+    margin: 0 17.5px 20px 0;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__item:nth-child(4n + 1),
+  .list-article04 .list-article04__item:nth-child(3n + 1),
+  .list-article04 .list-article04__item:nth-child(2n + 1) {
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item.full-size-item {
+    width: 202px;
+    margin: 0 17.5px 20px 0;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item:nth-child(4n + 1) {
+    clear: both;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item:nth-child(5n + 1),
+  .list-article04 .list-article04__item:nth-child(3n + 1),
+  .list-article04 .list-article04__item:nth-child(2n + 1) {
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__item {
+    width: 20%;
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item {
+    width: 25%;
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04 .list-article04__item {
+    margin-bottom: 20px;
+    padding: 0 10px;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    -moz-transition-property: -moz-transform, -webkit-transform, box-shadow;
+    -o-transition-property: -o-transform, -webkit-transform, box-shadow;
+    -webkit-transition-property: -webkit-transform, -webkit-transform,
+      box-shadow;
+    transition-property: transform, -webkit-transform, box-shadow;
+    -moz-transition-duration: 0.2s;
+    -o-transition-duration: 0.2s;
+    -webkit-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+    -moz-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    -o-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    -webkit-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+}
+.list-article04 .list-article04__item-inner {
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  table-layout: fixed;
+  max-width: 1080px;
+  margin: 0 auto;
   display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  top: 0;
+}
+.list-article04 a {
+  color: inherit;
+}
+.list-article04 .list-article04__list.full-size-list .list-article04__cover {
+  margin-bottom: 53px;
+}
+.list-article04 .list-article04__cover {
+  vertical-align: middle;
+  position: relative;
+  display: block;
+  width: auto;
+  height: auto;
+}
+.list-article04 .list-article04__cover-inner-full {
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background: none;
+  width: 100%;
+}
+@media screen and (min-width: 1080px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .full-size-item
+    .list-article04__cover-inner-full {
+    background: none;
+  }
+}
+.list-article04 .list-article04__cover-inner-full span.auto-size-cnt {
+  position: relative;
+  display: table-cell;
+}
+.list-article04 .list-article04__cover-full {
+  width: auto;
+  height: 124px;
+  max-width: 100%;
+}
+@media screen and (min-width: 1080px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .full-size-item
+    .list-article04__cover-inner-full
+    img {
+    max-width: 202px;
+    position: relative;
+    display: block;
+  }
+}
+@media screen and (min-width: 860px) {
+  .list-article04 .list-article04__item .list-article04__cover-full {
+    width: auto;
+    height: 250px;
+  }
+}
+.sort-bar05 .sort-bar05__inner:after,
+.sort-bar05 .sort-bar05__inner:before {
+  content: "";
+  display: table;
+}
+.sort-bar05 .sort-bar05__inner:after {
+  clear: both;
+}
+.sort-bar05 .sort-bar05__inner:after,
+.sort-bar05 .sort-bar05__inner:before {
+  content: "";
+  display: table;
+}
+.list-article04 .list-article04__work-title {
+  position: absolute;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 14px;
+  bottom: -31px;
+}
+@media screen and (min-width: 1080px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .list-article04__work-title {
+    font-weight: bold;
+  }
+}
+.list-article04
+  .list-article04__list.full-size-list
+  .list-article04__cover
+  .list-article04__label2 {
+  position: absolute;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  bottom: -58px;
+}
+.list-article04 .list-article04__label2 {
+  margin-bottom: 7px;
+  min-height: 1em;
+  color: #868e96;
+}
+.list-article04 .list-article04__label1,
+.list-article04 .list-article04__label2,
+.list-article04 .list-article04__label3,
+.list-article04 .list-article04__label4 {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.list-article04 .list-article04__cover-inner-full span.auto-size-cnt:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(33, 37, 41, 0.1);
+}
+@media screen and (min-width: 1080px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .full-size-item
+    .list-article04__cover-inner-full
+    span.auto-size-cnt:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(33, 37, 41, 0.1);
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .full-size-item
+    .list-article04__cover-inner-full
+    span:after {
+    display: none;
+  }
+}
+@media screen and (min-width: 1097px) {
+  .list-article04
+    .list-article04__list.full-size-list
+    .full-size-item:nth-child(5n) {
+    margin-right: 0;
+  }
 }
 </style>
