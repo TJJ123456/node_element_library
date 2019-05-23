@@ -126,6 +126,86 @@
         </div>
       </section>
     </div>
+    <section class="ui-card _card">
+      <header class="ui-card__header">
+        <h1>男生最爱图书</h1>
+      </header>
+      <div class="ui-card__body">
+        <div class="ui-card__body-hscroll">
+          <div class="ui-card__body-hscroll-inner2">
+            <div class="ui-card__horizontal">
+              <ul class="ui-card__horizontal-list">
+                <li
+                  v-for="(item, index) in maleLikeList"
+                  :key="index"
+                  class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
+                >
+                  <div class="ui-card__figure">
+                    <a>
+                      <figure>
+                        <div class="ui-card__figure-media">
+                          <div class="cover-thumb03 cover-thumb03--flex">
+                            <div class="cover-thumb03__inner">
+                              <p class="cover-thumb03__image">
+                                <img :src="getImgPath(item.filepath)" alt width="100%">
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <figcaption class="ui-card__figure-caption">
+                          <p class="ui-card__figure-heading">{{item.name}}</p>
+                          <p class="ui-card__figure-sub-copy">{{item.author}}</p>
+                        </figcaption>
+                      </figure>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="ui-card _card">
+      <header class="ui-card__header">
+        <h1>女生最爱图书</h1>
+      </header>
+      <div class="ui-card__body">
+        <div class="ui-card__body-hscroll">
+          <div class="ui-card__body-hscroll-inner2">
+            <div class="ui-card__horizontal">
+              <ul class="ui-card__horizontal-list">
+                <li
+                  v-for="(item, index) in femaleLikeList"
+                  :key="index"
+                  class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
+                >
+                  <div class="ui-card__figure">
+                    <a>
+                      <figure>
+                        <div class="ui-card__figure-media">
+                          <div class="cover-thumb03 cover-thumb03--flex">
+                            <div class="cover-thumb03__inner">
+                              <p class="cover-thumb03__image">
+                                <img :src="getImgPath(item.filepath)" alt width="100%">
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <figcaption class="ui-card__figure-caption">
+                          <p class="ui-card__figure-heading">{{item.name}}</p>
+                          <p class="ui-card__figure-sub-copy">{{item.author}}</p>
+                        </figcaption>
+                      </figure>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <userfoot/>
   </div>
 </template>
@@ -137,16 +217,19 @@ export default {
   data() {
     return {
       bookList: [],
+      newBookList: [],
+      maleLikeList: [],
+      femaleLikeList: [],
       count: 0,
       showIndex: 0,
       showBook: true
     };
   },
-  // created() {
-  //   this.initData();
-  // },
+  created() {
+    this.initData();
+  },
   activated() {
-    this.GetListCount();
+    this.initData();
   },
   computed: {
     showList() {
@@ -159,7 +242,13 @@ export default {
   methods: {
     async initData() {
       this.loading = true;
-      this.GetListCount();
+      // this.GetListCount();
+      let data = await this.$fetch("book/list");
+      let male = await this.$fetch("book/malelist");
+      let female = await this.$fetch("book/femalelist");
+      this.bookList = data.data;
+      this.maleLikeList = male.data;
+      this.femaleLikeList = female.data;
       this.loading = false;
     },
     async GetListCount() {
@@ -201,6 +290,10 @@ export default {
       setTimeout(() => {
         this.showBook = true;
       }, 200);
+    },
+    getImgPath(path) {
+      if (path && path !== "") return "http://localhost:3000" + path;
+      return "http://localhost:3000/public/img/default.jpg";
     }
   }
 };

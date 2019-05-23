@@ -40,8 +40,64 @@ const descArr = [
   `才华横溢的前KPL职业选手何良，拥有一段令人失望的职业生涯，最终黯然退役。一直在其背后默默支持着他的弟弟何遇不忿哥哥职业生涯期间的遭遇，决心重走哥哥的职业路。观看过无数王者荣耀职业比赛拥有高端意识的他从未亲手接触过游戏，就这样毅然冲向了属于他的王者时刻。`
 ];
 
-const publisher = ['菱堂', '重生', '仙宫', '暗月', '爷傲', '仙道', '儒道', '魔改', '爽歪歪'];
+const publisherArr = ['菱堂', '重生', '仙宫', '暗月', '爷傲', '仙道', '儒道', '魔改', '爽歪歪'];
 
 const bookFirstName = ['超神', '重生', '穿越', '猥琐', '最强', '修真', '洪荒', '霸道', '人渣'];
 const bookMidName = ['总裁', '同桌', '邻居', '老头', '女生', '少年', '师父', '老爹', '奴才', '大师'];
 const bookFamilyName = ['爱上我', '穿越记', '大闹唐朝', '勇夺诺贝尔奖', '抢救地球', '火星漫游', '的奇幻人生', '称霸侏罗纪', '梦回明朝', '那些事'];
+const authorNmae = ['嗷呜超凶', '寄吧三少', '岸本骑史', '尾田荣三郎', '田上雄彦', '宝奇英高', '尖峰传奇', '谭俊健真帅', 'TJJ'];
+
+function randomIndex(count) {
+  return Math.round(Math.random() * (count - 1));
+}
+
+async function createGenre() {
+  for (let i = 0; i < GenreArr.length; ++i) {
+    let data = {
+      name: GenreArr[i],
+    }
+    await Genres.insert(data);
+  }
+}
+
+async function createBook() {
+  let genrelist = await Genres.find({});
+  for (let i = 0; i < genrelist.length; ++i) {
+    const rand = randomIndex(30) + 10;
+    for (let j = 0; j < rand; ++j) {
+      let name = bookFirstName[randomIndex(bookFirstName.length)] + bookMidName[randomIndex(bookMidName.length)] + bookFamilyName[randomIndex(bookFamilyName.length)];
+      let author = authorNmae[randomIndex(bookFirstName.length)];
+      let desc = descArr[randomIndex(descArr.length)];
+      let genrearr = [];
+      genrearr.push(genrelist[i]._id);
+      let lendTimes = randomIndex(100) + 10;
+      let maleClick = randomIndex(100) + 10;
+      let femaleClick = randomIndex(100) + 10;
+      let allClick = maleClick + femaleClick + randomIndex(100);
+      let publisher = publisherArr[randomIndex(publisherArr.length)];
+      let time = new Date();
+      let filepath = '/public/img/' + randomIndex(15) + '.jpg';
+      let doc = {
+        name,
+        desc,
+        author,
+        publisher,
+        genres: genrearr,
+        filepath,
+        lendTimes,
+        maleClick,
+        femaleClick,
+        allClick,
+        time: time.getTime()
+      }
+      await Books.insert(doc);
+    }
+  }
+}
+
+async function initData() {
+  // await createGenre();
+  await createBook();
+}
+
+// initData();

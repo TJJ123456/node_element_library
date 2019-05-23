@@ -17,7 +17,24 @@
       <ul class="list-inbox__list">
         <li class="list-inbox__item">
           <div class="list-inbox__item-inner">
-            
+            <div class="list-inbox__thumb">
+              <p>
+                <img src="https://images.comico.jp/app/inbox/pt/limit_none.png" alt>
+              </p>
+            </div>
+            <div class="list-inbox__body">
+              <p class="list-inbox__label1">书名</p>
+              <div class="list-inbox__footer">
+                <div class="list-inbox__date _expireDate">
+                  <p>还书日期：</p>
+                </div>
+                <div class="list-inbox__action">
+                  <p>
+                    <button type="button" class="btn03 btn03--special">我要还书</button>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </li>
       </ul>
@@ -212,4 +229,121 @@ p {
     margin: 0 auto;
   }
 }
+
+@media screen and (min-width: 1080px) {
+  .list-inbox .list-inbox__thumb {
+    padding: 16px;
+    width: 88px;
+  }
+}
+
+.list-inbox .list-inbox__thumb {
+  width: 80px;
+  text-align: center;
+  border-right: 1px dashed #ced4da;
+  padding: 16px 8px;
+}
+.list-inbox .list-inbox__body,
+.list-inbox .list-inbox__thumb {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 12px 15px;
+  border-collapse: collapse;
+  background: #fff;
+  position: relative;
+}
+@media screen and (min-width: 1080px) {
+  .list-inbox .list-inbox__body,
+  .list-inbox .list-inbox__thumb {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+.list-inbox .list-inbox__thumb img {
+  width: 100%;
+}
+img {
+  -ms-interpolation-mode: bicubic;
+  vertical-align: middle;
+}
+.list-inbox .list-inbox__body {
+  padding: 10px 16px 10px 12px;
+}
+@media screen and (min-width: 1080px) {
+  .list-inbox .list-inbox__body {
+    padding: 20px 115px 20px 24px;
+  }
+}
+
+.list-inbox .list-inbox__body,
+.list-inbox .list-inbox__thumb {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 12px 15px;
+  border-collapse: collapse;
+  background: #fff;
+  position: relative;
+}
+@media screen and (min-width: 1080px) {
+  .list-inbox .list-inbox__body,
+  .list-inbox .list-inbox__thumb {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+.list-inbox .list-inbox__footer {
+  display: table;
+  width: 100%;
+  margin-top: 8px;
+}
+.list-inbox .list-inbox__date {
+  display: table-cell;
+  vertical-align: middle;
+  color: #868e96;
+  font-size: 13px;
+}
+.list-inbox .list-inbox__action {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+}
+.btn03.btn03--special {
+  border-color: #f40009;
+  color: #f40009;
+  font-weight: 500;
+  &:hover{
+    cursor: pointer;
+  }
+}
+@media screen and (min-width: 1080px) {
+  .list-inbox .list-inbox__action button {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    margin-top: -16px;
+  }
+}
+
+.btn03 {
+  display: inline-block;
+  font-size: 13px;
+  padding: 6px 23px;
+  border: 1px solid #ced4da;
+  color: #495057;
+  border-radius: 40px;
+  background: #fff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  text-align: center;
+  min-width: 33px;
+  position: relative;
+  line-height: 1.67;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 </style>

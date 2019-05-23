@@ -54,10 +54,8 @@ route.post('/list', async (req, res, next) => {
     try {
         let data = await Genres.find({}, { limit: limit, skip: offset });
         for (let i = 0; i < data.length; ++i) {
-            console.log(data[i]._id);
             data[i].bookList = await Books.find({ genre: data[i]._id })
             let tmp = await Books.find({});
-            console.log(tmp);
             console.log(data[i].bookList);
         }
         res.json({

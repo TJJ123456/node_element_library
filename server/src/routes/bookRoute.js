@@ -62,10 +62,56 @@ route.post('/list', async (req, res, next) => {
 route.get('/list', async (req, res, next) => {
     try {
         let data = await Books.find({});
+        for (let i = 0; i < data.length; ++i) {
+            data[i].genreNames = [];
+            for (let j = 0; j < data[i].genres.length; ++j) {
+                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                data[i].genreNames.push(genre.name);
+            }
+        }
         res.json({
             data: data
         });
     } catch (e) {
+        console.log(e.message);
+        res.status(405).send(e.message);
+    }
+})
+
+route.get('/malelist', async (req, res, next) => {
+    try {
+        let data = await Books.find({}, { limit: 5, sort: { maleClick: -1 } });
+        for (let i = 0; i < data.length; ++i) {
+            data[i].genreNames = [];
+            for (let j = 0; j < data[i].genres.length; ++j) {
+                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                data[i].genreNames.push(genre.name);
+            }
+        }
+        res.json({
+            data: data
+        });
+    } catch (e) {
+        console.log(e.message);
+        res.status(405).send(e.message);
+    }
+})
+
+route.get('/femalelist', async (req, res, next) => {
+    try {
+        let data = await Books.find({}, { limit: 5, sort: { femaleClick: -1 } });
+        for (let i = 0; i < data.length; ++i) {
+            data[i].genreNames = [];
+            for (let j = 0; j < data[i].genres.length; ++j) {
+                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                data[i].genreNames.push(genre.name);
+            }
+        }
+        res.json({
+            data: data
+        });
+    } catch (e) {
+        console.log(e.message);
         res.status(405).send(e.message);
     }
 })
