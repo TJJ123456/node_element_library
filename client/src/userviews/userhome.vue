@@ -39,26 +39,66 @@
           <div class="ui-card__body-hscroll-inner2">
             <div class="ui-card__horizontal">
               <ul class="ui-card__horizontal-list">
-                <li class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent">
+                <li
+                  v-for="(item, index) in newList"
+                  :key="index"
+                  class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
+                >
                   <div class="ui-card__figure">
-                    <a>
+                    <a @click="toDetail(item._id)">
                       <figure>
                         <div class="ui-card__figure-media">
                           <div class="cover-thumb03 cover-thumb03--flex">
                             <div class="cover-thumb03__inner">
                               <p class="cover-thumb03__image">
-                                <img
-                                  src="//comicimg.comico.jp/tmb/23844/8cb85aae_1553582280767.jpg"
-                                  alt
-                                  width="100%"
-                                >
+                                <img :src="getImgPath(item.filepath)" alt width="100%">
                               </p>
                             </div>
                           </div>
                         </div>
                         <figcaption class="ui-card__figure-caption">
-                          <p class="ui-card__figure-heading">书名</p>
-                          <p class="ui-card__figure-sub-copy">简介</p>
+                          <p class="ui-card__figure-heading">{{item.name}}</p>
+                          <p class="ui-card__figure-sub-copy">{{item.author}}</p>
+                        </figcaption>
+                      </figure>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="ui-card _card">
+      <header class="ui-card__header">
+        <h1>点击最多图书</h1>
+      </header>
+      <div class="ui-card__body">
+        <div class="ui-card__body-hscroll">
+          <div class="ui-card__body-hscroll-inner2">
+            <div class="ui-card__horizontal">
+              <ul class="ui-card__horizontal-list">
+                <li
+                  v-for="(item, index) in clickList"
+                  :key="index"
+                  class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
+                >
+                  <div class="ui-card__figure">
+                    <a @click="toDetail(item._id)">
+                      <figure>
+                        <div class="ui-card__figure-media">
+                          <div class="cover-thumb03 cover-thumb03--flex">
+                            <div class="cover-thumb03__inner">
+                              <p class="cover-thumb03__image">
+                                <img :src="getImgPath(item.filepath)" alt width="100%">
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <figcaption class="ui-card__figure-caption">
+                          <p class="ui-card__figure-heading">{{item.name}}</p>
+                          <p class="ui-card__figure-sub-copy">{{item.author}}</p>
                         </figcaption>
                       </figure>
                     </a>
@@ -141,7 +181,7 @@
                   class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
                 >
                   <div class="ui-card__figure">
-                    <a>
+                    <a @click="toDetail(item._id)">
                       <figure>
                         <div class="ui-card__figure-media">
                           <div class="cover-thumb03 cover-thumb03--flex">
@@ -181,7 +221,7 @@
                   class="ui-card__horizontal-item ui-card__horizontal-item--bg-transparent"
                 >
                   <div class="ui-card__figure">
-                    <a>
+                    <a @click="toDetail(item._id)">
                       <figure>
                         <div class="ui-card__figure-media">
                           <div class="cover-thumb03 cover-thumb03--flex">
@@ -220,6 +260,8 @@ export default {
       newBookList: [],
       maleLikeList: [],
       femaleLikeList: [],
+      clickList: [],
+      newList: [],
       count: 0,
       showIndex: 0,
       showBook: true
@@ -246,9 +288,13 @@ export default {
       let data = await this.$fetch("book/list");
       let male = await this.$fetch("book/malelist");
       let female = await this.$fetch("book/femalelist");
+      let click = await this.$fetch("book/clicklist");
+      let newlist = await this.$fetch("book/newlist");
       this.bookList = data.data;
       this.maleLikeList = male.data;
       this.femaleLikeList = female.data;
+      this.clickList = click.data;
+      this.newList = newlist.data;
       this.loading = false;
     },
     async GetListCount() {
@@ -294,6 +340,9 @@ export default {
     getImgPath(path) {
       if (path && path !== "") return "http://localhost:3000" + path;
       return "http://localhost:3000/public/img/default.jpg";
+    },
+    toDetail(id) {
+      this.$router.push({ name: "bookDetail", params: { bookId: id } });
     }
   }
 };

@@ -1,46 +1,46 @@
 <template>
   <div>
     <userhead/>
-    <div class="stage__body stage__body--fixed-header1" >
+    <div class="stage__body stage__body--fixed-header1">
       <div class="article-hero08">
         <div class="article-hero08__bg-image">
           <div class="article-hero08__inner">
             <div class="article-hero08__inner2 full-size-cnt">
               <div class="article-hero08__cover">
-                <div
-                  class="article-hero08__cover-image"
-                  style="background-image:url(http://comicimg.comico.jp/store/2/title/38692/th_de12e2cc.png);"
-                >
-                  <img src="http://comicimg.comico.jp/store/2/title/38692/th_de12e2cc.png" alt>
+                <div class="article-hero08__cover-image">
+                  <img :src="getImgPath(bookDetail.filepath)" alt>
                 </div>
               </div>
               <div class="article-hero08__body">
-                <h1 class="article-hero08__title" style="opacity: 1; height: auto;">书名</h1>
+                <h1
+                  class="article-hero08__title"
+                  style="opacity: 1; height: auto;"
+                >{{bookDetail.name}}</h1>
                 <ul class="article-hero08__list-meta">
                   <li class="article-hero08__list-meta-item">
-                    <p class="article-hero08__author">作者</p>
+                    <p class="article-hero08__author">{{bookDetail.author}}</p>
                   </li>
                   <li class="article-hero08__list-meta-item">
                     <p class="article-hero08__author">|</p>
                   </li>
                   <li class="article-hero08__list-meta-item">
-                    <p class="article-hero08__publisher">出版社</p>
+                    <p class="article-hero08__publisher">{{bookDetail.publisher}}</p>
+                  </li>
+                  <li class="article-hero08__list-meta-item">
+                    <p class="article-hero08__author">|</p>
+                  </li>
+                  <li class="article-hero08__list-meta-item">
+                    <p class="article-hero08__author">点击次数：{{bookDetail.allClick}}</p>
                   </li>
                 </ul>
                 <ul class="article-hero08__list-genre">
-                  <li class="article-hero08__list-genre-item">
-                    <p class="article-hero08__genre">种类</p>
-                  </li>
-                  <li class="article-hero08__list-genre-item">
-                    <p class="article-hero08__genre">种类</p>
+                  <li v-for="(item, index) in bookDetail.genreNamelist" :key="index" class="article-hero08__list-genre-item">
+                    <p class="article-hero08__genre">{{item}}</p>
                   </li>
                 </ul>
                 <div class="article-hero08__description">
                   <div class="article-hero08__description-inner">
-                    <p
-                      class="_description"
-                      style="opacity: 1;"
-                    >喜欢它的孩子总是去童年友好的帅哥Sunagawa，但它是直的，笨拙和麻木不仁的，男孩是超级巨大的！一天早上他从一个通勤火车的骚扰者中拯救了一个女孩即使是坚强的人也是对春天到来的预感......！？笑声和哭泣，充满了胸部的Kyun，热闹的纯爱情喜剧！</p>
+                    <p class="_description" style="opacity: 1;">{{bookDetail.desc}}</p>
                   </div>
                 </div>
                 <ul class="article-hero08__list-meta" style="margin-top:25px;">
@@ -67,120 +67,22 @@
         <div class="list-article04">
           <div class="list-article04__inner">
             <ul class="list-article04__list _articleList full-size-list">
-              <li class="list-article04__item full-size-item">
+              <li
+                v-for="(item, index) in relateList"
+                :key="index"
+                class="list-article04__item full-size-item"
+              >
                 <a href="list-article04__item-inner">
                   <div class="list-article04__cover">
                     <div class="list-article04__cover-inner-full">
                       <span class="auto-size-cnt">
                         <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
+                          :src="getImgPath(item.filepath)"
                           alt
                           class="list-article04__cover-full"
                         >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="list-article04__item full-size-item">
-                <a href="list-article04__item-inner">
-                  <div class="list-article04__cover">
-                    <div class="list-article04__cover-inner-full">
-                      <span class="auto-size-cnt">
-                        <img
-                          src="http://comicimg.comico.jp/store/2/title/38692/article/5/th_607374a5.png"
-                          alt
-                          class="list-article04__cover-full"
-                        >
-                        <p class="list-article04__work-title _listTitle">书名</p>
-                        <p class="list-article04__label2">作者</p>
+                        <p class="list-article04__work-title _listTitle">{{item.name}}</p>
+                        <p class="list-article04__label2">{{item.author}}·</p>
                       </span>
                     </div>
                   </div>
@@ -200,11 +102,15 @@ export default {
     return {
       loading: false,
       bookDetail: {},
-      borrowInfo: {}
+      borrowInfo: {},
+      relateList: []
     };
   },
+  created() {
+    this.initData();
+  },
   activated() {
-    // this.initData();
+    this.initData();
   },
   computed: {
     checkBorrowIsMe() {
@@ -221,6 +127,9 @@ export default {
     }
   },
   methods: {
+    getNameAndGenres() {
+
+    },
     async initData() {
       this.loading = true;
       let book = await this.$fetch("book/detail", {
@@ -230,6 +139,7 @@ export default {
         })
       });
       this.bookDetail = book.book;
+      this.relateList = book.relateList;
       // this.borrowInfo = book.borrowInfo;
       this.loading = false;
     },

@@ -116,6 +116,44 @@ route.get('/femalelist', async (req, res, next) => {
     }
 })
 
+route.get('/clicklist', async (req, res, next) => {
+    try {
+        let data = await Books.find({}, { limit: 5, sort: { allClick: -1 } });
+        for (let i = 0; i < data.length; ++i) {
+            data[i].genreNames = [];
+            for (let j = 0; j < data[i].genres.length; ++j) {
+                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                data[i].genreNames.push(genre.name);
+            }
+        }
+        res.json({
+            data: data
+        });
+    } catch (e) {
+        console.log(e.message);
+        res.status(405).send(e.message);
+    }
+})
+
+route.get('/newlist', async (req, res, next) => {
+    try {
+        let data = await Books.find({}, { limit: 5, sort: { time: -1 } });
+        for (let i = 0; i < data.length; ++i) {
+            data[i].genreNames = [];
+            for (let j = 0; j < data[i].genres.length; ++j) {
+                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                data[i].genreNames.push(genre.name);
+            }
+        }
+        res.json({
+            data: data
+        });
+    } catch (e) {
+        console.log(e.message);
+        res.status(405).send(e.message);
+    }
+})
+
 route.post('/delete', async (req, res, next) => {
     const id = req.body.id;
     try {
@@ -162,13 +200,17 @@ route.post('/detail', async (req, res, next) => {
         book.allClick++;
         await Books.updateOne({ _id: id }, book);
         book.genreNamelist = [];
-        for (let i = 0; i < book.genre.length; ++i) {
-            let doc = await Genres.findOne({ _id: book.genre[i] })
+        for (let i = 0; i < book.genres.length; ++i) {
+            let doc = await Genres.findOne({ _id: book.genres[i] })
             book.genreNamelist.push(doc.name);
         }
         // let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
-        res.json({ book: book, borrowInfo: borrowInfo });
+        let borrowInfo = {};
+        let relateList = await Books.find({ $or: [{ genres: [book.genres[0]] }, { author: book.author }] }, { limit: 10 });
+        console.log(relateList.length);
+        res.json({ book: book, borrowInfo: borrowInfo, relateList: relateList });
     } catch (e) {
+        console.log(e.message);
         res.status(405).send(e.message);
     }
 })

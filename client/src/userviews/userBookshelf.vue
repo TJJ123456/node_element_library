@@ -130,6 +130,9 @@ export default {
       setTimeout(() => {
         this.showBook = true;
       }, 200);
+    },
+    toDetail(id) {
+      this.$router.push({ name: "bookDetail", params: { bookId: id } });
     }
   }
 };
