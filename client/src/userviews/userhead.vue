@@ -6,7 +6,7 @@
         <div class="comico-global-header02__main-action1">
           <div class="comico-global-header02__site-logo">
             <p>
-              <a class="comico-global-header02__site-logo-inner">哈哈哈</a>
+              <a @click="toHome()" class="comico-global-header02__site-logo-inner">哈哈哈</a>
             </p>
           </div>
           <ul class="comico-global-header02__list-nav">
@@ -22,15 +22,23 @@
             <li class="comico-global-header02__list-nav2-item o-large-screen-object">
               <form class="comico-global-header02__list-nav2-item-inner" onsubmit="false">
                 <div class="comico-global-header02__search02">
-                  <input type="text" class="comico-global-header02__search02-input" maxlength="50">
-                  <input type="button" class="i-search04 comico-global-header02__search02-submit">
+                  <input
+                    v-model="keyword"
+                    type="text"
+                    class="comico-global-header02__search02-input"
+                    maxlength="50"
+                  >
+                  <button
+                    @click="search()"
+                    class="i-search04 comico-global-header02__search02-submit"
+                  ></button>
                 </div>
               </form>
             </li>
             <li
               class="comico-global-header02__list-nav2-item comico-global-header02__list-nav2-item--login o-large-screen-object"
             >
-              <a class="comico-global-header02__list-nav2-item-inner">注册</a>
+              <a @click="toSignup()" class="comico-global-header02__list-nav2-item-inner">注册</a>
             </li>
           </ul>
           <div class="comico-global-header02__switch-site o-large-screen-object">
@@ -71,7 +79,11 @@ export default {
   },
   computed: {
     checkMyView() {
-      return this.$route.name === "bookDetail" || this.$route.name === "search" || this.$route.name === "myview";
+      return (
+        this.$route.name === "bookDetail" ||
+        this.$route.name === "search" ||
+        this.$route.name === "myview"
+      );
     }
   },
   methods: {
@@ -90,9 +102,15 @@ export default {
         type: "success"
       });
     },
+    toHome() {
+      this.$router.push({ path: "/" });
+    },
+    toSignup() {
+      this.$router.push({ path: "/home/signup" });
+    },
     search() {
       if (this.keyword !== "")
-        this.$router.replace({
+        this.$router.push({
           name: "search",
           params: { keyword: this.keyword }
         });

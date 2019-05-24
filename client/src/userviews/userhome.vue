@@ -19,10 +19,14 @@
         <div class="ui-card__body">
           <div class="ui-card__search">
             <ol class="ui-card__search-trend-list">
-              <li class="ui-card__search-trend-item">
-                <a class="ui-card__search-trend-item-inner">
-                  <p class="ui-card__search-trend-rank">1.</p>
-                  <p class="ui-card__search-trend-word">网络</p>
+              <li
+                v-for="(item, index) in searchList"
+                :key="index"
+                class="ui-card__search-trend-item"
+              >
+                <a class="ui-card__search-trend-item-inner" @click="search(item.word)">
+                  <p class="ui-card__search-trend-rank">{{index+1}}.</p>
+                  <p class="ui-card__search-trend-word">{{item.word}}</p>
                 </a>
               </li>
             </ol>
@@ -262,6 +266,7 @@ export default {
       femaleLikeList: [],
       clickList: [],
       newList: [],
+      searchList: [],
       count: 0,
       showIndex: 0,
       showBook: true
@@ -290,11 +295,13 @@ export default {
       let female = await this.$fetch("book/femalelist");
       let click = await this.$fetch("book/clicklist");
       let newlist = await this.$fetch("book/newlist");
+      let search = await this.$fetch("book/searchList");
       this.bookList = data.data;
       this.maleLikeList = male.data;
       this.femaleLikeList = female.data;
       this.clickList = click.data;
       this.newList = newlist.data;
+      this.searchList = search.data;
       this.loading = false;
     },
     async GetListCount() {
@@ -303,6 +310,12 @@ export default {
         this.getList();
         this.count = data.data;
       }
+    },
+    search(keyword) {
+      this.$router.push({
+        name: "search",
+        params: { keyword: keyword }
+      });
     },
     getImgPath(path) {
       if (path && path !== "") return "http://localhost:3000" + path;

@@ -6,43 +6,40 @@
       style="margin-top: -50px;"
     >
       <div class="comico-global-search__action o-mb5">
-        <form onsubmit="false" class="comico-global-search__form">
+        <div class="comico-global-search__form">
           <div class="comico-global-search__form-inner">
             <div class="comico-global-search__input-outer">
               <input
                 type="text"
                 class="comico-global-search__input _searchInput"
+                v-model="keyword2"
                 placeholder="按标题/作者姓名搜索"
               >
             </div>
-            <button class="el-icon-search comico-global-search__submit _searchSubmit"></button>
+            <button @click="search()" class="el-icon-search comico-global-search__submit _searchSubmit"></button>
             <div class="comico-global-search__form-border"></div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
     <p class="o-maxw640 o-mt10 o-center">
       合计
-      <span class="o-txt-bold">222个</span>搜索结果
+      <span class="o-txt-bold">{{showList.length}}个</span>搜索结果
     </p>
     <div class="horizontal-nav02 o-mt30ws horizontal-nav02--flex"></div>
     <div class="list-search-result">
       <ul class="list-search-result__list _searchList">
-        <li class="list-search-result__item">
-          <a class="list-search-result__item-inner">
+        <li class="list-search-result__item" v-for="(item, index) in showList" :key="index">
+          <a class="list-search-result__item-inner" @click="toDetail(item._id)">
             <div class="list-search-result__cover">
               <div class="list-search-result__cover-inner">
-                <img
-                  src="//comicimg.comico.jp/tmb/24543/73ed2f46_1522982122297.jpg"
-                  alt
-                  width="100%"
-                >
+                <img :src="getImgPath(item.filepath)" alt width="100%" height="100%">
               </div>
             </div>
             <div class="list-search-result__body">
-              <p class="list-search-result__label1">书名</p>
-              <p class="list-search-result__label2">作者</p>
-              <p class="list-search-result__label3">简介</p>
+              <p class="list-search-result__label1">{{item.name}}</p>
+              <p class="list-search-result__label2">{{item.author}}</p>
+              <p class="list-search-result__label3">{{item.desc}}</p>
             </div>
           </a>
         </li>
@@ -62,7 +59,8 @@ export default {
     return {
       showList: [],
       loading: false,
-      showBook: true
+      showBook: true,
+      keyword2: ""
     };
   },
   created() {
@@ -79,6 +77,7 @@ export default {
   methods: {
     async initData() {
       this.loading = true;
+      this.keyword2 = this.keyword;
       let list = await this.$fetch("book/usersearch", {
         method: "POST",
         body: JSON.stringify({
@@ -87,6 +86,20 @@ export default {
       });
       this.showList = list.data;
       this.loading = false;
+    },
+    getImgPath(path) {
+      if (path && path !== "") return "http://localhost:3000" + path;
+      return "http://localhost:3000/public/img/default.jpg";
+    },
+    search() {
+      if (this.keyword2 !== "")
+        this.$router.push({
+          name: "search",
+          params: { keyword: this.keyword2 }
+        });
+    },
+    toDetail(id) {
+      this.$router.push({ name: "bookDetail", params: { bookId: id } });
     }
   }
 };

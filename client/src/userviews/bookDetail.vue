@@ -34,7 +34,11 @@
                   </li>
                 </ul>
                 <ul class="article-hero08__list-genre">
-                  <li v-for="(item, index) in bookDetail.genreNamelist" :key="index" class="article-hero08__list-genre-item">
+                  <li
+                    v-for="(item, index) in bookDetail.genreNamelist"
+                    :key="index"
+                    class="article-hero08__list-genre-item"
+                  >
                     <p class="article-hero08__genre">{{item}}</p>
                   </li>
                 </ul>
@@ -72,7 +76,7 @@
                 :key="index"
                 class="list-article04__item full-size-item"
               >
-                <a href="list-article04__item-inner">
+                <a @click="toDetail(item._id)">
                   <div class="list-article04__cover">
                     <div class="list-article04__cover-inner-full">
                       <span class="auto-size-cnt">
@@ -112,6 +116,13 @@ export default {
   activated() {
     this.initData();
   },
+  watch: {
+    bookId(val, oldval) {
+      if (val !== oldval) {
+        this.initData();
+      }
+    }
+  },
   computed: {
     checkBorrowIsMe() {
       // console.log(this.bookDetail.state, this.borrowInfo);
@@ -127,9 +138,7 @@ export default {
     }
   },
   methods: {
-    getNameAndGenres() {
-
-    },
+    getNameAndGenres() {},
     async initData() {
       this.loading = true;
       let book = await this.$fetch("book/detail", {
@@ -198,6 +207,10 @@ export default {
         this.bookDetail = data.book;
         this.borrowInfo = null;
       }
+    },
+    toDetail(id) {
+      console.log("相关id是", id);
+      this.$router.push({ name: "bookDetail", params: { bookId: id } });
     }
   },
   props: {

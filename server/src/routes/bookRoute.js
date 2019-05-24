@@ -1,4 +1,4 @@
-import { Books, BookShelf, Genres, BorrowList, Users } from '../providers'
+import { Books, BookShelf, Genres, BorrowList, Users, Searchs } from '../providers'
 import express from 'express'
 const route = express.Router();
 
@@ -206,7 +206,16 @@ route.post('/detail', async (req, res, next) => {
         }
         // let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
         let borrowInfo = {};
-        let relateList = await Books.find({ $or: [{ genres: [book.genres[0]] }, { author: book.author }] }, { limit: 10 });
+        let relateList = await Books.find(
+            {
+                $and:
+                    [
+                        { $or: [{ genres: [book.genres[0]] }, { author: book.author }] },
+                        { _id: { $ne: book._id } }
+                    ]
+
+
+            }, { limit: 10 });
         console.log(relateList.length);
         res.json({ book: book, borrowInfo: borrowInfo, relateList: relateList });
     } catch (e) {
@@ -266,9 +275,36 @@ route.post('/usersearch', async (req, res, next) => {
     const keyword = req.body.keyword;
     let regex = new RegExp(keyword);
     try {
-        let data = await Books.find({ "name": regex });
+        let data = await Books.find({
+            $or: [
+                { "name": regex }, { "desc": regex }, { "author": regex }
+            ]
+        });
+        if (data.length > 0) {
+            let doc = await Searchs.findOne({ word: keyword });
+            if (doc) {
+                doc.num++;
+                await Searchs.updateOne({ _id: doc._id }, doc);
+            } else {
+                let newdoc = {
+                    word: keyword,
+                    num: 1,
+                };
+                await Searchs.insert(newdoc);
+            }
+        }
         res.json({ data: data });
     } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
+route.get('/searchList', async (req, res, next) => {
+    try {
+        let data = await Searchs.find({}, { sort: { num: -1 }, limit: 10 });
+        res.json({ data: data });
+    } catch (e) {
+        console.log(e.message);
         res.status(405).send(e.message);
     }
 })

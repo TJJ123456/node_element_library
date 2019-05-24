@@ -70,13 +70,31 @@
                 <div class="form01__item">
                   <div class="form01__area01">
                     <div class="form01__txt01">
-                      用户名
+                      密保答案
                       <span class="form01__alert-txt01">*</span>
                     </div>
                   </div>
                   <div class="form01__area02">
                     <input type="text" class="m-input01">
-                    <p class="form01__txt02">请选择密保答案</p>
+                    <p class="form01__txt02">请输入密保答案</p>
+                  </div>
+                </div>
+                <div class="form01__item">
+                  <div class="form01__area01">
+                    <div class="form01__txt01">
+                      性别
+                      <span class="form01__alert-txt01">*</span>
+                    </div>
+                  </div>
+                  <div class="form01__area02">
+                    <ul>
+                      <li class="radio-set02__item_01">
+                        <input type="radio" class="radio-set02__input01 _vdtRadio" v-model.number="sex" value="0">男
+                      </li>
+                      <li class="radio-set02__item_01">
+                        <input type="radio" class="radio-set02__input01 _vdtRadio" v-model.number="sex" value="1">女
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -117,25 +135,7 @@ export default {
       questionList: [],
       mode: "login",
       activeName2: "first",
-      ruleForm: {
-        username: "",
-        question: 0,
-        answer: "",
-        password: "",
-        checkpassword: ""
-      },
-      rules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
-        ],
-        answer: [
-          { required: true, validator: validateAnswer, trigger: "blur" }
-        ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        checkpassword: [
-          { required: true, validator: validateCheckPass, trigger: "blur" }
-        ]
-      }
+      sex: 0
     };
   },
   activated() {
@@ -426,7 +426,7 @@ textarea {
   *display: inline;
   cursor: pointer;
   color: #ffffff;
-  background-color: #FF7F50;
+  background-color: #ff7f50;
   // background-image: url(//secure-images.comico.jp/r02/spbtn-scc408e891c.png);
   width: 155px;
   height: 50px;
@@ -439,5 +439,19 @@ textarea {
   padding: 0;
   border: none;
   overflow: hidden;
+}
+.radio-set02__item_01 {
+  float: left;
+  margin-right: 30px;
+}
+.radio-set02__input01 {
+  margin-right: 5px;
+}
+.o-clear:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  content: ".";
 }
 </style>

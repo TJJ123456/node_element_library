@@ -17,6 +17,8 @@ export const BookShelf = modelFactory(collectionFactory('bookshelf', idIndex))
 export const BorrowList = modelFactory(collectionFactory('borrowlist', idIndex))
 //种类表
 export const Genres = modelFactory(collectionFactory('genres', idIndex))
+//搜索表
+export const Searchs = modelFactory(collectionFactory('Searchs', idIndex))
 
 const GenreArr = ['玄幻', '都市', '奇幻', '仙侠', '现实', '历史', '体育', '游戏', '悬疑', '武侠', '灵异', '科幻'];
 const descArr = [
