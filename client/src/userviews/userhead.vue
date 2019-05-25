@@ -18,7 +18,7 @@
           </ul>
         </div>
         <div class="comico-global-header02__main-action2">
-          <ul class="comico-global-header02__list-nav2">
+          <ul class="comico-global-header02__list-nav2" v-if="!$state.user">
             <li class="comico-global-header02__list-nav2-item o-large-screen-object">
               <form class="comico-global-header02__list-nav2-item-inner" onsubmit="false">
                 <div class="comico-global-header02__search02">
@@ -43,7 +43,16 @@
           </ul>
           <div class="comico-global-header02__switch-site o-large-screen-object">
             <div class="comico-global-header02__switch-site-inner">
-              <a class="comico-global-header02__switch-site-btn">登录</a>
+              <a
+                v-if="!$state.user"
+                @click="toLogin()"
+                class="comico-global-header02__switch-site-btn"
+              >登录</a>
+              <a
+                v-if="$state.user"
+                @click="toMyview()"
+                class="comico-global-header02__switch-site-btn"
+              >{{$state.user.username}}</a>
             </div>
           </div>
         </div>
@@ -107,6 +116,12 @@ export default {
     },
     toSignup() {
       this.$router.push({ path: "/home/signup" });
+    },
+    toLogin() {
+      this.$router.push({ path: "/home/login" });
+    },
+    toMyview() {
+      this.$router.push({ path: "/home/userview" });
     },
     search() {
       if (this.keyword !== "")

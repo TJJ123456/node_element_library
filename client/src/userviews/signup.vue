@@ -11,7 +11,7 @@
               <h1 class="buttom-line" style="color:#f11;">注册</h1>
             </div>
             <p class="o-mt30">请填写注册所需信息</p>
-            <form>
+            <form onsubmit="false">
               <div class="m-form01 o-mt6">
                 <p class="form01__caption-outside01">*为必填项目</p>
                 <div class="form01__item">
@@ -22,8 +22,8 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <input type="text" class="m-input01">
-                    <p class="form01__txt02">请输入用户名</p>
+                    <input v-model="username" @blur="checkusername()" type="text" class="m-input01">
+                    <p v-if="ruleForm.username" class="form01__txt02">请输入用户名</p>
                   </div>
                 </div>
                 <div class="form01__item form01__pair01">
@@ -34,8 +34,8 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <input type="text" class="m-input01">
-                    <p class="form01__txt02">请输入密码</p>
+                    <input @blur="checkpassword()" v-model="password" type="text" class="m-input01">
+                    <p v-if="ruleForm.password" class="form01__txt02">请输入密码</p>
                   </div>
                 </div>
                 <div class="form01__item">
@@ -46,8 +46,13 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <input type="text" class="m-input01">
-                    <p class="form01__txt02">请确认密码</p>
+                    <input
+                      v-model="confirmpassword"
+                      @blur="checkcheckpassword()"
+                      type="text"
+                      class="m-input01"
+                    >
+                    <p v-if="ruleForm.confirmpassword" class="form01__txt02">{{checkpasswordErr}}</p>
                   </div>
                 </div>
                 <div class="form01__item">
@@ -58,13 +63,14 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <select class="m-input01">
-                      <option value="volvo">Volvo</option>
-                      <option value="saab">Saab</option>
-                      <option value="opel">Opel</option>
-                      <option value="audi">Audi</option>
+                    <select class="m-input01" v-model="question">
+                      <option
+                        v-for="(item, index) in questionList"
+                        :key="index"
+                        :value="index"
+                      >{{item}}</option>
                     </select>
-                    <p class="form01__txt02">请选择密保问题</p>
+                    <!-- <p class="form01__txt02">请选择密保问题</p> -->
                   </div>
                 </div>
                 <div class="form01__item">
@@ -75,8 +81,8 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <input type="text" class="m-input01">
-                    <p class="form01__txt02">请输入密保答案</p>
+                    <input v-model="answer" type="text" class="m-input01" @blur="checkanswear()">
+                    <p v-if="ruleForm.answer" class="form01__txt02">请选择输入答案</p>
                   </div>
                 </div>
                 <div class="form01__item">
@@ -89,17 +95,27 @@
                   <div class="form01__area02">
                     <ul>
                       <li class="radio-set02__item_01">
-                        <input type="radio" class="radio-set02__input01 _vdtRadio" v-model.number="sex" value="0">男
+                        <input
+                          type="radio"
+                          class="radio-set02__input01 _vdtRadio"
+                          v-model.number="sex"
+                          value="0"
+                        >男
                       </li>
                       <li class="radio-set02__item_01">
-                        <input type="radio" class="radio-set02__input01 _vdtRadio" v-model.number="sex" value="1">女
+                        <input
+                          type="radio"
+                          class="radio-set02__input01 _vdtRadio"
+                          v-model.number="sex"
+                          value="1"
+                        >女
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
               <div class="o-center o-mt40">
-                <button class="m-btn-confirm01 o-replacement _vdtSubmit">提交注册</button>
+                <button @click.prevent="onSubmit()" class="m-btn-confirm01 o-replacement">提交注册</button>
               </div>
             </form>
           </div>
@@ -111,32 +127,28 @@
 <script>
 export default {
   data() {
-    var validateCheckPass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (this.ruleForm.checkpassword !== this.ruleForm.password) {
-        callback(new Error("两次密码不一致"));
-      } else {
-        if (this.ruleForm.checkpassword !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-
-    var validateAnswer = (rule, value, callback) => {
-      if (value === "" && this.mode === "signup") {
-        callback(new Error("请输入答案"));
-      } else {
-        callback();
-      }
-    };
     return {
       questionList: [],
       mode: "login",
       activeName2: "first",
-      sex: 0
+      username: "",
+      password: "",
+      confirmpassword: "",
+      sex: 0,
+      question: 0,
+      answer: "",
+      checkpasswordErr: "",
+      ruleForm: {
+        username: false,
+        password: false,
+        confirmpassword: false,
+        answer: false,
+        sex: false
+      }
     };
+  },
+  created() {
+    this.initData();
   },
   activated() {
     this.initData();
@@ -158,6 +170,47 @@ export default {
       this.questionList = question.data;
       this.loading = false;
     },
+    checkusername() {
+      if (this.username === "") {
+        this.ruleForm.username = true;
+        return false;
+      } else {
+        this.ruleForm.username = false;
+        return true;
+      }
+    },
+    checkpassword() {
+      if (this.password === "") {
+        this.ruleForm.password = true;
+        return false;
+      } else {
+        this.ruleForm.password = false;
+        return true;
+      }
+    },
+    checkanswear() {
+      if (this.answer === "") {
+        this.ruleForm.answer = true;
+        return false;
+      } else {
+        this.ruleForm.answer = false;
+        return true;
+      }
+    },
+    checkcheckpassword() {
+      if (this.confirmpassword === "") {
+        this.ruleForm.confirmpassword = true;
+        this.checkpasswordErr = "请确认密码";
+        return false;
+      } else if (this.confirmpassword !== this.password) {
+        this.ruleForm.confirmpassword = true;
+        this.checkpasswordErr = "两次输入密码不一致";
+        return false;
+      } else {
+        this.ruleForm.confirmpassword = false;
+        return true;
+      }
+    },
     handleClick(tab, event) {
       if (tab.index === "0") {
         this.mode = "login";
@@ -167,57 +220,24 @@ export default {
       console.log(this.mode);
     },
     onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.operation();
-          //   alert("sumit");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    async operation() {
-      await this[this.mode]();
-    },
-    async login() {
-      const data = await this.$fetch("user/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: this.ruleForm.username,
-          password: this.ruleForm.password
-        })
-      });
-      console.log(data);
-      if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
-      } else {
-        this.$message({
-          showClose: true,
-          message: "登录成功",
-          type: "success"
-        });
-        this.$state.user = data;
-        localStorage.setItem("user", JSON.stringify(data));
-        if (this.$route.params.wantedRoute) {
-          this.$router.replace(this.$route.params.wantedRoute);
-        } else {
-          this.$router.replace("/");
-        }
+      if (
+        this.checkusername() &&
+        this.checkpassword() &&
+        this.checkcheckpassword() &&
+        this.checkanswear()
+      ) {
+        this.signup();
       }
     },
     async signup() {
       let data = await this.$fetch("user/signup", {
         method: "POST",
         body: JSON.stringify({
-          username: this.ruleForm.username,
-          password: this.ruleForm.password,
-          question: this.ruleForm.question,
-          answer: this.ruleForm.answer
+          username: this.username,
+          password: this.password,
+          question: this.question,
+          answer: this.answer,
+          sex: this.sex
         })
       });
       if (data.err) {
@@ -233,16 +253,11 @@ export default {
           message: "注册账号成功",
           type: "success"
         });
-        this.resetForm("ruleForm");
-        this.activeName2 = "first";
-        this.mode = "login";
+        this.resetForm();
+        this.$router.push({ path: "/home/login" });
       }
     },
-    resetForm(formName) {
-      this.$nextTick(() => {
-        this.$refs[formName].resetFields();
-      });
-    },
+    resetForm() {},
     forgetPassword() {
       this.$router.push({ path: "/home/forgetPassword" });
     }

@@ -20,15 +20,27 @@
               <div class="m-mail-login01 login-top o-clear">
                 <div class="mail-login01__area01">
                   <div class="mail-login01__item01">
-                    <input type="text" class="m-input06 font16px" placeholder="请输入用户名">
+                    <input
+                      v-model="username"
+                      @blur="checkusername()"
+                      type="text"
+                      class="m-input06 font16px"
+                      placeholder="请输入用户名"
+                    >
                   </div>
                   <div class="mail-login01__item01">
-                    <input type="password" class="m-input06 font16px" placeholder="请输入密码">
+                    <input
+                      v-model="password"
+                      @blur="checkpassword()"
+                      type="password"
+                      class="m-input06 font16px"
+                      placeholder="请输入密码"
+                    >
                   </div>
-                  <p class="form01__alert-txt01">用户名或密码错误</p>
+                  <p v-if="loginerr" class="form01__alert-txt01">{{err}}</p>
                 </div>
                 <p class="mail-login01__input02">
-                  <button class="m-btn-login01 _vdtSubmit">登陆</button>
+                  <button @click.prevent="onSubmit()" class="m-btn-login01 _vdtSubmit">登陆</button>
                 </p>
               </div>
             </form>
@@ -52,70 +64,48 @@
 <script>
 export default {
   data() {
-    var validateCheckPass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (this.ruleForm.checkpassword !== this.ruleForm.password) {
-        callback(new Error("两次密码不一致"));
-      } else {
-        if (this.ruleForm.checkpassword !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-
-    var validateAnswer = (rule, value, callback) => {
-      if (value === "" && this.mode === "signup") {
-        callback(new Error("请输入答案"));
-      } else {
-        callback();
-      }
-    };
     return {
       questionList: [],
-      mode: "login",
-      activeName2: "first",
+      username: "",
+      password: "",
+      err: "",
+      loginerr: false,
       ruleForm: {
         username: "",
-        question: 0,
-        answer: "",
-        password: "",
-        checkpassword: ""
-      },
-      rules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
-        ],
-        answer: [
-          { required: true, validator: validateAnswer, trigger: "blur" }
-        ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        checkpassword: [
-          { required: true, validator: validateCheckPass, trigger: "blur" }
-        ]
+        password: ""
       }
     };
   },
   activated() {
     this.initData();
   },
-  computed: {
-    title() {
-      switch (this.mode) {
-        case "login":
-          return "登录";
-        case "signup":
-          return "注册";
-      }
-    }
-  },
+  computed: {},
   methods: {
     async initData() {
       this.loading = true;
       let question = await this.$fetch("user/question");
       this.questionList = question.data;
       this.loading = false;
+    },
+    checkusername() {
+      if (this.username === "") {
+        this.err = "请输入用户名";
+        this.loginerr = true;
+        return false;
+      } else {
+        this.loginerr = false;
+        return true;
+      }
+    },
+    checkpassword() {
+      if (this.password === "") {
+        this.err = "请输入密码";
+        this.loginerr = true;
+        return false;
+      } else {
+        this.loginerr = false;
+        return true;
+      }
     },
     handleClick(tab, event) {
       if (tab.index === "0") {
@@ -126,15 +116,9 @@ export default {
       console.log(this.mode);
     },
     onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.operation();
-          //   alert("sumit");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      if (this.checkusername() && this.checkpassword()) {
+        this.login();
+      }
     },
     async operation() {
       await this[this.mode]();
@@ -143,17 +127,13 @@ export default {
       const data = await this.$fetch("user/login", {
         method: "POST",
         body: JSON.stringify({
-          username: this.ruleForm.username,
-          password: this.ruleForm.password
+          username: this.username,
+          password: this.password
         })
       });
-      console.log(data);
       if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
+        this.loginerr = true;
+        this.err = "用户名或密码错误";
       } else {
         this.$message({
           showClose: true,
@@ -167,34 +147,6 @@ export default {
         } else {
           this.$router.replace("/");
         }
-      }
-    },
-    async signup() {
-      let data = await this.$fetch("user/signup", {
-        method: "POST",
-        body: JSON.stringify({
-          username: this.ruleForm.username,
-          password: this.ruleForm.password,
-          question: this.ruleForm.question,
-          answer: this.ruleForm.answer
-        })
-      });
-      if (data.err) {
-        this.$message({
-          showClose: true,
-          message: data.msg,
-          type: "error"
-        });
-      } else {
-        console.log("回调信息", data);
-        this.$message({
-          showClose: true,
-          message: "注册账号成功",
-          type: "success"
-        });
-        this.resetForm("ruleForm");
-        this.activeName2 = "first";
-        this.mode = "login";
       }
     },
     resetForm(formName) {
