@@ -38,6 +38,9 @@
                     >
                   </div>
                   <p v-if="loginerr" class="form01__alert-txt01">{{err}}</p>
+                  <p>
+                    <a @click="forgetPassword()" style="color:gray">忘记密码？</a>
+                  </p>
                 </div>
                 <p class="mail-login01__input02">
                   <button @click.prevent="onSubmit()" class="m-btn-login01 _vdtSubmit">登陆</button>

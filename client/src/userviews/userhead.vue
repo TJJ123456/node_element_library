@@ -18,7 +18,7 @@
           </ul>
         </div>
         <div class="comico-global-header02__main-action2">
-          <ul class="comico-global-header02__list-nav2" v-if="!$state.user">
+          <ul class="comico-global-header02__list-nav2" >
             <li class="comico-global-header02__list-nav2-item o-large-screen-object">
               <form class="comico-global-header02__list-nav2-item-inner" onsubmit="false">
                 <div class="comico-global-header02__search02">
@@ -38,7 +38,8 @@
             <li
               class="comico-global-header02__list-nav2-item comico-global-header02__list-nav2-item--login o-large-screen-object"
             >
-              <a @click="toSignup()" class="comico-global-header02__list-nav2-item-inner">注册</a>
+              <a v-if="!$state.user" @click="toSignup()" class="comico-global-header02__list-nav2-item-inner">注册</a>
+              <a v-if="$state.user" @click="toMyview()" class="comico-global-header02__list-nav2-item-inner">{{$state.user.username}}</a>
             </li>
           </ul>
           <div class="comico-global-header02__switch-site o-large-screen-object">
@@ -50,9 +51,9 @@
               >登录</a>
               <a
                 v-if="$state.user"
-                @click="toMyview()"
+                @click="logout()"
                 class="comico-global-header02__switch-site-btn"
-              >{{$state.user.username}}</a>
+              >登出</a>
             </div>
           </div>
         </div>

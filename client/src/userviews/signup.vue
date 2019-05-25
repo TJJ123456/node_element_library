@@ -34,7 +34,7 @@
                     </div>
                   </div>
                   <div class="form01__area02">
-                    <input @blur="checkpassword()" v-model="password" type="text" class="m-input01">
+                    <input @blur="checkpassword()" v-model="password" type="password" class="m-input01">
                     <p v-if="ruleForm.password" class="form01__txt02">请输入密码</p>
                   </div>
                 </div>
@@ -49,7 +49,7 @@
                     <input
                       v-model="confirmpassword"
                       @blur="checkcheckpassword()"
-                      type="text"
+                      type="password"
                       class="m-input01"
                     >
                     <p v-if="ruleForm.confirmpassword" class="form01__txt02">{{checkpasswordErr}}</p>

@@ -69,11 +69,11 @@ route.get('/question', async (req, res, next) => {
 
 route.post('/resetpassword', async (req, res, next) => {
     try {
+        console.log(req.body);
         const username = req.body.username;
         const question = req.body.question;
         const answer = req.body.answer;
         const password = req.body.password;
-        const sex = req.body.sex;
         const user = await getByUsername(username);
         if (user) {
             const hash = await hashPassword(password)
