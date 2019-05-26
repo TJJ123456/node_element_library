@@ -6,19 +6,19 @@
         <div class="comico-global-header02__main-action1">
           <div class="comico-global-header02__site-logo">
             <p>
-              <a @click="toHome()" class="comico-global-header02__site-logo-inner">哈哈哈</a>
+              <a @click="toHome()" class="comico-global-header02__site-logo-inner">图书馆</a>
             </p>
           </div>
           <ul class="comico-global-header02__list-nav">
             <li
               class="comico-global-header02__list-nav-item comico-global-header02__list-nav-item--focus2"
             >
-              <a class="comico-global-header02__list-nav-item-inner">官方书架</a>
+              <a @click="toEdit()" class="comico-global-header02__list-nav-item-inner">官方推荐</a>
             </li>
           </ul>
         </div>
         <div class="comico-global-header02__main-action2">
-          <ul class="comico-global-header02__list-nav2" >
+          <ul class="comico-global-header02__list-nav2">
             <li class="comico-global-header02__list-nav2-item o-large-screen-object">
               <form class="comico-global-header02__list-nav2-item-inner" onsubmit="false">
                 <div class="comico-global-header02__search02">
@@ -38,8 +38,16 @@
             <li
               class="comico-global-header02__list-nav2-item comico-global-header02__list-nav2-item--login o-large-screen-object"
             >
-              <a v-if="!$state.user" @click="toSignup()" class="comico-global-header02__list-nav2-item-inner">注册</a>
-              <a v-if="$state.user" @click="toMyview()" class="comico-global-header02__list-nav2-item-inner">{{$state.user.username}}</a>
+              <a
+                v-if="!$state.user"
+                @click="toSignup()"
+                class="comico-global-header02__list-nav2-item-inner"
+              >注册</a>
+              <a
+                v-if="$state.user"
+                @click="toMyview()"
+                class="comico-global-header02__list-nav2-item-inner"
+              >{{$state.user.username}}</a>
             </li>
           </ul>
           <div class="comico-global-header02__switch-site o-large-screen-object">
@@ -68,10 +76,18 @@
           <div class="comico-global-header02__sub-category-inner">
             <ul class="comico-global-header02__sub-category-list">
               <li class="comico-global-header02__sub-category-item">
-                <a class="comico-global-header02__sub-category-item-inner">排行</a>
+                <a
+                  @click="toEdit()"
+                  class="comico-global-header02__sub-category-item-inner"
+                  :class="{'red':routeIsEdit}"
+                >排行</a>
               </li>
               <li class="comico-global-header02__sub-category-item">
-                <a class="comico-global-header02__sub-category-item-inner">类型</a>
+                <a
+                  @click="toGenre()"
+                  class="comico-global-header02__sub-category-item-inner"
+                  :class="{'red':routeIsGenre}"
+                >类型</a>
               </li>
             </ul>
           </div>
@@ -94,6 +110,12 @@ export default {
         this.$route.name === "search" ||
         this.$route.name === "myview"
       );
+    },
+    routeIsGenre() {
+      return this.$route.name === "userGenres";
+    },
+    routeIsEdit() {
+      return this.$route.name === "userBookshelf";
     }
   },
   methods: {
@@ -119,10 +141,16 @@ export default {
       this.$router.push({ path: "/home/signup" });
     },
     toLogin() {
-      this.$router.push({ path: "/home/login" });
+      this.$router.push({
+        name: "userLogin",
+        params: { wantedRoute: this.$route.path }
+      });
     },
     toMyview() {
       this.$router.push({ path: "/home/userview" });
+    },
+    toGenre() {
+      this.$router.push({ path: "/home/userGenres" });
     },
     search() {
       if (this.keyword !== "")
@@ -130,6 +158,9 @@ export default {
           name: "search",
           params: { keyword: this.keyword }
         });
+    },
+    toEdit() {
+      this.$router.push({ path: "/home/userBookshelf" });
     }
   }
 };
@@ -714,10 +745,13 @@ a:hover {
 .comico-global-header02 .comico-global-header02__sub-category-item-inner {
   display: block;
   padding: 0 8px;
-  color: inherit;
+  // color: inherit;
   font-weight: normal;
   &:hover {
     color: #f11;
   }
+}
+.red {
+  color: #f11;
 }
 </style>

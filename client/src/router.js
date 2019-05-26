@@ -22,6 +22,7 @@ import manage from './views/manage.vue';
 import home from './views/home.vue';
 
 import userhome from './userviews/userhome.vue';
+import userGenres from './userviews/userGenres.vue';
 import userLayout from './userviews/userLayout.vue';
 import userBookshelf from './userviews/userBookshelf.vue';
 import userLogin from './userviews/login.vue';
@@ -42,12 +43,21 @@ const routes = [
         },
         {
             path: '/home/userBookshelf',
+            name: 'userBookshelf',
             component: userBookshelf,
             meta: [],
         },
         {
+            path: '/home/userGenres',
+            name: 'userGenres',
+            component: userGenres,
+            meta: [],
+        },
+        {
             path: '/home/login',
+            name: 'userLogin',
             component: userLogin,
+            props: true,
             meta: [],
         },
         {
@@ -64,7 +74,7 @@ const routes = [
             path: '/home/userview',
             name: 'myview',
             component: userview,
-            meta: [],
+            meta: { private: true },
         },
         {
             path: '/book/:bookId',
@@ -152,14 +162,14 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    console.log('to', to.name, to.meta, to.fullPath);
+    // console.log('to', to.name, to.meta, to.matched.some(r => r.meta.private), state.user);
     // if (to.meta.private && !state.user) {
     if (to.matched.some(r => r.meta.manager) && !state.manager) {
         next({ name: 'managerlogin', params: { wantedRoute: to.fullPath } });
         return;
     }
     if (to.matched.some(r => r.meta.private) && !state.user) {
-        next({ name: 'login', params: { wantedRoute: to.fullPath } });
+        next({ name: 'userLogin', params: { wantedRoute: to.fullPath } });
         return;
     }
     if (to.matched.some(r => r.meta.guest) && state.user) {

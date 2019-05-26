@@ -13,7 +13,6 @@ route.post('/create', async (req, res, next) => {
             state: req.body.state,
             borrowtime: req.body.borrowtime,
             backtime: req.body.backtime,
-            bookshelf: req.body.bookshelf,
         }
         const newDoc = await BookInstances.insert(data);
         res.json({ status: 'ok' })
@@ -97,7 +96,6 @@ route.post('/change', async (req, res, next) => {
             state: req.body.state,
             borrowtime: req.body.borrowtime,
             backtime: req.body.backtime,
-            bookshelf: bookshelf,
         }
         let data = await BookInstances.update({ _id: id }, doc);
         res.json({ status: 'ok' });
@@ -127,47 +125,48 @@ route.post('/change', async (req, res, next) => {
 // })
 
 route.post('/borrow', async (req, res, next) => {
-    const bookId = req.body.id;
+    const bookid = req.body.id;
     try {
         if (!req.session.user) {
             throw new Error('请登录');
         }
+        let activeBook = await BookInstances.findOne({ bookid: bookid, state: 0 });
+        if (!activeBook) {
+            throw new Error('本书被借完啦');
+        }
+        console.log(activeBook);
+        let doc = await BorrowList.findOne({ reader: req.session.user._id, bookid: bookid, backTime: 0 });
+        if (doc) {
+            throw new Error('您已借阅过了');
+        }
         let date = new Date();
         const data = {
-            bookinstanceid: bookinstanceid,
+            bookid: bookid,
+            bookinstanceid: activeBook._id,
             reader: req.session.user._id,
             borrowTime: date.getTime(),
             backTime: 0,//没还书就是0
         }
-        const doc = await BorrowList.insert(data);
-        let upbook = await BookInstances.updateOne({ _id: bookId }, { $set: { 'state': "已借出" } });
-        res.json({ book: upbook, borrowInfo: doc });
+        const newdoc = await BorrowList.insert(data);
+        console.log(newdoc);
+        let upbook = await BookInstances.updateOne({ _id: activeBook._id }, { $set: { 'state': 1 } });
+        res.json({ state: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
     }
 })
 
 route.post('/backBook', async (req, res, next) => {
-    const bookId = req.body.id;
+    const bookinstanceid = req.body.id;
     try {
         if (!req.session.user) {
             throw new Error('请登录');
         }
         let date = new Date();
-        const doc = await BorrowList.updateOne({ book: bookId, backTime: 0, reader: req.session.user._id }, { $set: { 'backTime': date.getTime() } });
+        const doc = await BorrowList.updateOne({ bookinstanceid: bookinstanceid, backTime: 0, reader: req.session.user._id }, { $set: { 'backTime': date.getTime() } });
         console.log('还书情况', doc);
-        let upbook = await Books.updateOne({ _id: bookId }, { $set: { 'state': "可借阅" } });
-        let book = await Books.findOne({ _id: bookId });
-        if (book.bookshelf !== '') {
-            let shelf = await BookShelf.findOne({ _id: book.bookshelf });
-            book.shelfname = shelf.name;
-        }
-        book.genreNamelist = [];
-        for (let i = 0; i < book.genre.length; ++i) {
-            let doc = await Genres.findOne({ _id: book.genre[i] })
-            book.genreNamelist.push(doc.name);
-        }
-        res.json({ book: book, borrowInfo: doc });
+        let upbook = await BookInstances.updateOne({ _id: bookinstanceid }, { $set: { 'state': 0 } });
+        res.json({ state: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
     }

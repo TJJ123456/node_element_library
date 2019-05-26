@@ -1,4 +1,4 @@
-import { Books, BookShelf, Genres, BorrowList, Users, Searchs } from '../providers'
+import { Books, BookShelf, Genres, BorrowList, Users, Searchs, BookInstances } from '../providers'
 import express from 'express'
 const route = express.Router();
 
@@ -8,6 +8,7 @@ async function getByname(name) {
 
 route.post('/create', async (req, res, next) => {
     try {
+        let time = new Date();
         const data = {
             name: req.body.name,
             desc: req.body.desc,
@@ -19,6 +20,7 @@ route.post('/create', async (req, res, next) => {
             maleClick: 0,
             femaleClick: 0,
             allClick: 0,
+            time: time.getTime()
         }
         const newDoc = await Books.insert(data);
         res.json({ status: 'ok' })
@@ -65,7 +67,7 @@ route.get('/list', async (req, res, next) => {
         for (let i = 0; i < data.length; ++i) {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
-                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
         }
@@ -84,7 +86,7 @@ route.get('/malelist', async (req, res, next) => {
         for (let i = 0; i < data.length; ++i) {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
-                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
         }
@@ -103,7 +105,7 @@ route.get('/femalelist', async (req, res, next) => {
         for (let i = 0; i < data.length; ++i) {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
-                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
         }
@@ -122,7 +124,7 @@ route.get('/clicklist', async (req, res, next) => {
         for (let i = 0; i < data.length; ++i) {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
-                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
         }
@@ -141,7 +143,7 @@ route.get('/newlist', async (req, res, next) => {
         for (let i = 0; i < data.length; ++i) {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
-                let genre = Genres.findOne({ _id: data[i].genres[j] });
+                let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
         }
@@ -204,8 +206,11 @@ route.post('/detail', async (req, res, next) => {
             let doc = await Genres.findOne({ _id: book.genres[i] })
             book.genreNamelist.push(doc.name);
         }
-        // let borrowInfo = await BorrowList.findOne({ book: id, backTime: 0 })
-        let borrowInfo = {};
+        book.remaining = await BookInstances.count({ bookid: book._id, state: 0 });
+        let borrowInfo;
+        if (req.session.user) {
+            borrowInfo = await BorrowList.findOne({ reader: req.session.user._id, bookid: id, backTime: 0 })
+        }
         let relateList = await Books.find(
             {
                 $and:
@@ -213,10 +218,15 @@ route.post('/detail', async (req, res, next) => {
                         { $or: [{ genres: [book.genres[0]] }, { author: book.author }] },
                         { _id: { $ne: book._id } }
                     ]
-
-
             }, { limit: 10 });
-        console.log(relateList.length);
+        for (let i = 0; i < relateList.length; ++i) {
+            relateList[i].genreNamelist = [];
+            for (let j = 0; j < relateList[i].genres.length; ++j) {
+                let doc = await Genres.findOne({ _id: relateList[i].genres[j] })
+                relateList[i].genreNamelist.push(doc.name);
+            }
+        }
+
         res.json({ book: book, borrowInfo: borrowInfo, relateList: relateList });
     } catch (e) {
         console.log(e.message);
@@ -309,24 +319,34 @@ route.get('/searchList', async (req, res, next) => {
     }
 })
 
-// route.get('/borrowlist', async (req, res, next) => {
-//     try {
-//         if (!req.session.user) {
-//             throw new Error('请登录');
-//         }
-//         let list = await BorrowList.find({ reader: req.session.user._id }, { sort: { backTime: 1 } });
-//         for (let i in list) {
-//             list[i].bookdetail = await Books.findOne({ _id: list[i].book });
-//             if (list[i].bookdetail.bookshelf !== '') {
-//                 let shelf = await BookShelf.findOne({ _id: list[i].bookdetail.bookshelf });
-//                 list[i].bookdetail.shelfname = shelf.name;
-//             }
-//         }
-//         res.json({ data: list });
-//     } catch (e) {
-//         res.status(405).send(e.message);
-//     }
-// })
+route.get('/borrowlist', async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            throw new Error('请登录');
+        }
+        let list = await BorrowList.find({ reader: req.session.user._id }, { sort: { backTime: 1 } });
+        for (let i in list) {
+            list[i].bookdetail = await Books.findOne({ _id: list[i].bookid });
+        }
+        res.json({ data: list });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
+route.get('/managerborrowlist', async (req, res, next) => {
+    try {
+        let list = await BorrowList.find({});
+        for (let i in list) {
+            list[i].bookdetail = await Books.findOne({ _id: list[i].bookid });
+            let reader = await Users.findOne({ _id: list[i].reader });
+            list[i].readername = reader.username;
+        }
+        res.json({ data: list });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
 
 // route.post('/managerborrowlist', async (req, res, next) => {
 //     const limit = req.body.limit;

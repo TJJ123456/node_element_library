@@ -3,9 +3,9 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="书架名称"></el-table-column>
+        <el-table-column prop="name" label="书单名称"></el-table-column>
         <el-table-column prop="desc" label="描述"></el-table-column>
-        <el-table-column prop="bookList.length" label="书架书本"></el-table-column>
+        <el-table-column prop="booklist.length" label="书单书本"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -23,7 +23,7 @@
           :total="count"
         ></el-pagination>
       </div>
-      <el-dialog title="修改书架信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="修改书单信息" :visible.sync="dialogFormVisible">
         <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
           <el-form-item label="名称" prop="name">
             <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
@@ -38,12 +38,12 @@
           </el-form-item>
         </el-form>
       </el-dialog>
-      <el-dialog title="书架书籍管理" :visible.sync="managerBookshelfVisible">
+      <el-dialog title="书单书籍管理" :visible.sync="managerBookshelfVisible">
         <el-form>
           <el-form-item>
             <template>
               <el-transfer
-                :titles="['无书架书籍', '该书架书籍']"
+                :titles="['无书单书籍', '该书单书籍']"
                 v-model="afterTransferList"
                 :data="transferBookList"
               ></el-transfer>
@@ -79,8 +79,8 @@ export default {
       loading: false,
       dialogForm: {},
       dialogFormrules: {
-        name: [{ required: true, message: "请输入书架名称", trigger: "blur" }],
-        desc: [{ required: true, message: "请输入书架描述", trigger: "blur" }]
+        name: [{ required: true, message: "请输入书单名称", trigger: "blur" }],
+        desc: [{ required: true, message: "请输入书单描述", trigger: "blur" }]
       }
     };
   },
@@ -88,7 +88,7 @@ export default {
     this.initData();
   },
   activated() {
-    this.GetListCount();
+    this.initData();
   },
   watch: {},
   methods: {
@@ -97,7 +97,7 @@ export default {
       this.loading = true;
       let bookList = await this.$fetch("book/list");
       this.bookList = bookList.data;
-      this.GetListCount();
+      this.getList();
       this.loading = false;
     },
     async GetListCount() {
@@ -127,52 +127,39 @@ export default {
       this.managerBookshelfVisible = true;
       this.transferBookList = [];
       this.afterTransferList = [];
-      this.removeShelfList = [];
       this.managerShelfId = this.tableData[index]._id;
       for (let i in this.bookList) {
         const item = this.bookList[i];
-        if (
-          item =>
-            item.bookshelf === "" || item.bookshelf === this.managerShelfId
-        ) {
-          this.transferBookList.push({
-            key: i,
-            label: item.name,
-            id: item._id,
-            shelf: item.bookshelf
-          });
-          if (item.bookshelf === this.managerShelfId) {
-            this.afterTransferList.push(i);
-            this.removeShelfList.push(i);
-          }
+        let doc = this.tableData[index].booklist.find(
+          book => book === item._id
+        );
+        this.transferBookList.push({
+          key: i,
+          label: item.name,
+          id: item._id
+        });
+        if (!doc) {
+          // this.afterTransferList.push(i);
+        } else {
+          this.afterTransferList.push(i);
         }
       }
     },
     async onChangeBookShelf() {
       this.loading = true;
-      let addShelfList = [];
-      let removeShelfList = [];
+      let shelfindex = this.tableData.findIndex(
+        item => item._id === this.managerShelfId
+      );
+      this.tableData[shelfindex].booklist = [];
       for (let i = 0; i < this.afterTransferList.length; ++i) {
         let index = this.afterTransferList[i];
-        if (this.transferBookList[index].shelf === "") {
-          addShelfList.push(this.transferBookList[index].id);
-        }
-        let tmp = this.removeShelfList.findIndex(item => item === index);
-        if (tmp !== -1) {
-          this.removeShelfList.splice(tmp, 1);
-        }
+        this.tableData[shelfindex].booklist.push(
+          this.transferBookList[index].id
+        );
       }
-      for (let i = 0; i < this.removeShelfList.length; ++i) {
-        let index = this.removeShelfList[i];
-        removeShelfList.push(this.transferBookList[index].id);
-      }
-      let data = await this.$fetch("bookshelf/transferBook", {
+      let data = await this.$fetch("bookshelf/change", {
         method: "POST",
-        body: JSON.stringify({
-          bookshelfId: this.managerShelfId,
-          addShelfList: addShelfList,
-          removeShelfList: removeShelfList
-        })
+        body: JSON.stringify(this.tableData[shelfindex])
       });
       if (data.err) {
         this.$message({
@@ -183,14 +170,11 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "管理书籍信息成功",
+          message: "修改推荐书单成功",
           type: "success"
         });
-        let index = this.tableData.findIndex(
-          item => item._id === this.managerShelfId
-        );
-        if (index !== -1) this.tableData[index] = data.data;
-        this.managerBookshelfVisible = false;
+        this.initData();
+        this.managerBookshelfVisible = true;
       }
       this.loading = false;
     },
@@ -210,7 +194,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "删除书架成功",
+          message: "删除书单成功",
           type: "success"
         });
         this.tableData.splice(index, 1);
@@ -240,7 +224,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "修改书架信息成功",
+          message: "修改书单信息成功",
           type: "success"
         });
         this.tableData[this.editIndex] = JSON.parse(

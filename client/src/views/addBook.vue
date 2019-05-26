@@ -34,9 +34,6 @@
                 >{{item.name}}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
-            <el-form-item label="书本特色">
-              <el-input type="textarea" v-model="ruleForm.feature"></el-input>
-            </el-form-item>
             <!-- <el-form-item label="书本状态" prop="state">
               <el-select v-model="ruleForm.state" placeholder="请选择书本状态">
                 <el-option label="维护" value="维护"></el-option>
@@ -99,7 +96,6 @@ export default {
         genre: [],
         filepath: "",
         feature: "",
-        lendTimes: 0
         // state: "",
         // borrowtime: "",
         // backtime: "",

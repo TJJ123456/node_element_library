@@ -3,7 +3,7 @@
     <headTop/>
     <div class="table_container">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="bookname" label="书名"></el-table-column>
+        <el-table-column prop="bookdetail.name" label="书名"></el-table-column>
         <el-table-column prop="readername" label="借书人"></el-table-column>
         <el-table-column prop="borrow" label="借书时间"></el-table-column>
         <el-table-column prop="back" label="还书时间"></el-table-column>
@@ -23,24 +23,6 @@
           :total="count"
         ></el-pagination>
       </div>
-      <el-dialog title="借书" :visible.sync="dialogFormVisible">
-        <el-form :rules="dialogFormrules" :model="dialogForm" ref="dialogForm">
-          <el-form-item label="名称" prop="name">
-            <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="描述" prop="desc">
-            <el-input v-model="dialogForm.desc"></el-input>
-          </el-form-item>
-          <el-form-item label="价格" prop="price">
-            <el-input v-model.number="dialogForm.price"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button type="primary" @click="onSubmit('dialogForm')">提交修改</el-button>
-            </el-row>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -78,13 +60,7 @@ export default {
   methods: {
     async initData() {
       this.loading = true;
-      let data = await this.$fetch("book/managerborrowlist", {
-        method: "POST",
-        body: JSON.stringify({
-          limit: this.limit,
-          offset: this.offset
-        })
-      });
+      let data = await this.$fetch("book/managerborrowlist");
       this.tableData = data.data;
       this.tableData.forEach(item => {
         item.borrow = this.formatTime(item.borrowTime);

@@ -15,22 +15,22 @@
         <p>过期的图书会自动归还</p>
       </div>
       <ul class="list-inbox__list">
-        <li class="list-inbox__item">
+        <li class="list-inbox__item" v-for="(item, index) in borrowList" :key="index">
           <div class="list-inbox__item-inner">
             <div class="list-inbox__thumb">
               <p>
-                <img src="https://images.comico.jp/app/inbox/pt/limit_none.png" alt>
+                <img :src="getImgPath(item.bookdetail.filepath)" alt>
               </p>
             </div>
             <div class="list-inbox__body">
-              <p class="list-inbox__label1">书名</p>
+              <p class="list-inbox__label1">{{item.bookdetail.name}}</p>
               <div class="list-inbox__footer">
                 <div class="list-inbox__date _expireDate">
-                  <p>还书日期：</p>
+                  <p>还书日期：{{item.back}}</p>
                 </div>
-                <div class="list-inbox__action">
+                <div v-if="item.backTime ===0" class="list-inbox__action">
                   <p>
-                    <button type="button" class="btn03 btn03--special">我要还书</button>
+                    <button @click="backBook(index)" type="button" class="btn03 btn03--special">我要还书</button>
                   </p>
                 </div>
               </div>
@@ -53,8 +53,11 @@ export default {
       loading: false
     };
   },
+  created() {
+    this.initData();
+  },
   activated() {
-    // this.initData();
+    this.initData();
   },
   watch: {
     keyword(val) {
@@ -85,6 +88,10 @@ export default {
       }
       this.loading = false;
     },
+    getImgPath(path) {
+      if (path && path !== "") return "http://localhost:3000" + path;
+      return "http://localhost:3000/public/img/default.jpg";
+    },
     formatTime(time) {
       return moment(time).format("LL");
     },
@@ -103,10 +110,10 @@ export default {
             type: "warning"
           }
         );
-        let data = await this.$fetch("book/backBook", {
+        let data = await this.$fetch("bookinstance/backBook", {
           method: "POST",
           body: JSON.stringify({
-            id: this.borrowList[index].book
+            id: this.borrowList[index].bookinstanceid
           })
         });
         if (data.err) {
@@ -311,7 +318,7 @@ img {
   border-color: #f40009;
   color: #f40009;
   font-weight: 500;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 }
@@ -345,5 +352,4 @@ img {
   -webkit-user-select: none;
   user-select: none;
 }
-
 </style>

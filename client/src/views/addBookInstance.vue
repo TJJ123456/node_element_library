@@ -14,16 +14,21 @@
           >
             <el-form-item label="书本">
               <el-select v-model="ruleForm.bookid" placeholder="请选择书本">
-                <el-option v-for="(item, index) in bookList" :key="index" :label="item.name" :value="item._id"></el-option>
+                <el-option
+                  v-for="(item, index) in bookList"
+                  :key="index"
+                  :label="item.name"
+                  :value="item._id"
+                ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="书本状态" prop="state">
+            <!-- <el-form-item label="书本状态" prop="state">
               <el-select v-model="ruleForm.state" placeholder="请选择书本状态">
                 <el-option label="维护" value="维护"></el-option>
                 <el-option label="可借阅" value="可借阅"></el-option>
               </el-select>
-            </el-form-item>
-            <template v-if="ruleForm.state==='可借阅'">
+            </el-form-item>-->
+            <!-- <template v-if="ruleForm.state==='可借阅'">
               <el-form-item label="所属书架">
                 <el-select v-model="ruleForm.bookshelf" placeholder="请选择书架">
                   <el-option
@@ -34,7 +39,7 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-            </template>
+            </template>-->
             <el-form-item>
               <el-row type="flex" justify="center">
                 <el-button type="primary" @click="onSubmit('ruleForm')">添加书本实例</el-button>
@@ -55,10 +60,9 @@ export default {
       loading: true,
       ruleForm: {
         bookid: "",
-        state: "",
-        borrowtime: "",
-        backtime: "",
-        bookshelf: ""
+        state: 0,
+        borrowtime: 0,
+        backtime: 0
       },
       rules: {
         name: [{ required: true, message: "请输入书本名称", trigger: "blur" }],

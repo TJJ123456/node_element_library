@@ -179,6 +179,20 @@ route.get('/count', async (req, res, next) => {
 
 })
 
+route.get('/list', async (req, res, next) => {
+    try {
+        let data = await Users.find({});
+        for (let i in data) {
+            data[i].borrowcount = await BorrowList.count({ reader: data[i]._id });
+        }
+        res.json({
+            data: data
+        });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
 route.post('/list', async (req, res, next) => {
     const limit = req.body.limit;
     const offset = req.body.offset;

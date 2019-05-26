@@ -49,12 +49,18 @@
                 </div>
                 <ul class="article-hero08__list-meta" style="margin-top:25px;">
                   <li class="article-hero08__list-meta-item">
-                    <p class="article-hero08__author">未借阅数量</p>
+                    <p class="article-hero08__author">未借阅数量：{{bookDetail.remaining}}</p>
                   </li>
                 </ul>
                 <ul class="article-hero08__action">
                   <li class="article-hero08__action-item o-large-screen-object">
-                    <a class="btn03 btn03--large btn03--special">借阅</a>
+                    <a
+                      v-if="!borrowInfo"
+                      @click="borrow()"
+                      class="btn03 btn03--large btn03--special"
+                      :class="{'btn03--noremain':bookDetail.remaining <= 0}"
+                    >借阅</a>
+                    <a @click="backBook()" v-else class="btn03 btn03--large btn03--special">还书</a>
                   </li>
                 </ul>
               </div>
@@ -86,7 +92,9 @@
                           class="list-article04__cover-full"
                         >
                         <p class="list-article04__work-title _listTitle">{{item.name}}</p>
-                        <p class="list-article04__label2">{{item.author}}·</p>
+                        <p
+                          class="list-article04__label2"
+                        >{{item.author}}·{{getGenre(item.genreNamelist)}}</p>
                       </span>
                     </div>
                   </div>
@@ -149,15 +157,28 @@ export default {
       });
       this.bookDetail = book.book;
       this.relateList = book.relateList;
-      // this.borrowInfo = book.borrowInfo;
+      this.borrowInfo = book.borrowInfo;
       this.loading = false;
     },
     getImgPath(path) {
       if (path && path !== "") return "http://localhost:3000" + path;
       return "http://localhost:3000/public/img/default.jpg";
     },
+    getGenre(arr) {
+      let str = "";
+      for (let i = 0; i < arr.length; ++i) {
+        str += arr[i];
+        if (i != arr.length - 1) {
+          str += ",";
+        }
+      }
+      return str;
+    },
     async borrow() {
-      let data = await this.$fetch("book/borrow", {
+      if (this.bookDetail.remaining <= 0) {
+        return;
+      }
+      let data = await this.$fetch("bookinstance/borrow", {
         method: "POST",
         body: JSON.stringify({
           id: this.bookId
@@ -165,7 +186,11 @@ export default {
       });
       if (data.err) {
         if (data.msg === "请登录") {
-          this.$router.replace("/home/login", "");
+          console.log("path", this.$route.path);
+          this.$router.replace({
+            name: "userLogin",
+            params: { wantedRoute: this.$route.path }
+          });
         }
         this.$message({
           showClose: true,
@@ -178,20 +203,22 @@ export default {
           message: "借书成功",
           type: "success"
         });
-        this.bookDetail = data.book;
-        this.borrowInfo = data.borrowInfo;
+        this.initData();
       }
     },
     async backBook() {
-      let data = await this.$fetch("book/backBook", {
+      let data = await this.$fetch("bookinstance/backBook", {
         method: "POST",
         body: JSON.stringify({
-          id: this.bookId
+          id: this.borrowInfo.bookinstanceid
         })
       });
       if (data.err) {
         if (data.msg === "请登录") {
-          this.$router.replace("/home/login", "");
+          this.$router.replace({
+            name: "userLogin",
+            params: { wantedRoute: this.$route.path }
+          });
         }
         this.$message({
           showClose: true,
@@ -204,12 +231,10 @@ export default {
           message: "还书成功",
           type: "success"
         });
-        this.bookDetail = data.book;
-        this.borrowInfo = null;
+        this.initData();
       }
     },
     toDetail(id) {
-      console.log("相关id是", id);
       this.$router.push({ name: "bookDetail", params: { bookId: id } });
     }
   },
@@ -220,6 +245,12 @@ export default {
   }
 };
 </script>
+<style scoped>
+ul {
+  padding-inline-start: 0;
+}
+</style>
+
 <style lang="less">
 .stage .stage__body.stage__body--fixed-header1 {
   margin-top: -48px;
@@ -542,6 +573,13 @@ export default {
   color: #f40009;
   font-weight: 500;
 }
+
+.btn03.btn03--noremain {
+  border-color: gray;
+  color: gray;
+  font-weight: 500;
+}
+
 .btn03.btn03--large {
   padding: 9px 20px;
   font-size: 14px;

@@ -37,7 +37,6 @@ route.get('/list', async (req, res, next) => {
     try {
         let data = await Genres.find({});
         for (let i = 0; i < data.length; ++i) {
-            console.log(data[i]._id);
             data[i].bookList = await Books.find({ "genre": data[i]._id })
         }
         res.json({

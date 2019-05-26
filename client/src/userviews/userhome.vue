@@ -129,7 +129,11 @@
         <div class="ui-card__body _cardBody">
           <div class="ul-card__ranking">
             <ul class="ul-card__ranking-list1">
-              <li class="ul-card__ranking-list1-item">
+              <li
+                v-for="(item, index) in showEdit"
+                :key="index"
+                class="ul-card__ranking-list1-item"
+              >
                 <div class="ui-card__figure2 ui-card__figure2--type2">
                   <a class="ui-card__figure2-inner">
                     <img src="//images.comico.jp/spn/blank/img_1x1.png" alt>
@@ -138,10 +142,7 @@
                         <div class="cover-thumb03 cover-thumb03--flex">
                           <div class="cover-thumb03__inner">
                             <p class="cover-thumb03__image">
-                              <img
-                                src="//comicimg.comico.jp/tmb/21267/a8d49a81_1518749361997.jpg"
-                                alt
-                              >
+                              <img :src="getImgPath(item.filepath)" alt width="100%">
                             </p>
                           </div>
                         </div>
@@ -152,8 +153,8 @@
                             <p class="ui-card__figure2-rank">1</p>
                           </div>
                           <div class="ui-card__figure2-caption-group2">
-                            <p class="ui-card__figure2-heading">书名</p>
-                            <p class="ui-card__figure2-sub-copy">作者</p>
+                            <p class="ui-card__figure2-heading">{{item.name}}</p>
+                            <p class="ui-card__figure2-sub-copy">{{item.author}}</p>
                           </div>
                         </div>
                       </figcaption>
@@ -260,6 +261,8 @@ export default {
   components: { userhead },
   data() {
     return {
+      bookshelfList: [],
+      showEdit: [],
       bookList: [],
       newBookList: [],
       maleLikeList: [],
@@ -296,12 +299,21 @@ export default {
       let click = await this.$fetch("book/clicklist");
       let newlist = await this.$fetch("book/newlist");
       let search = await this.$fetch("book/searchList");
+      let shelf = await this.$fetch("bookshelf/list");
       this.bookList = data.data;
       this.maleLikeList = male.data;
       this.femaleLikeList = female.data;
       this.clickList = click.data;
       this.newList = newlist.data;
       this.searchList = search.data;
+      this.bookshelfList = shelf.data;
+      let length =
+        this.bookshelfList[0].bookInfoList.length > 5
+          ? 5
+          : this.bookshelfList[0].bookInfoList.length;
+      for (let i = 0; i < length; ++i) {
+        this.showEdit.push(this.bookshelfList[0].bookInfoList[i]);
+      }
       this.loading = false;
     },
     async GetListCount() {

@@ -4,7 +4,7 @@
 
     <el-row style="margin-top: 20px;">
       <el-col :span="14" :offset="4">
-        <header class="form_header">添加书架</header>
+        <header class="form_header">添加推荐</header>
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -20,7 +20,7 @@
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" @click="onSubmit('ruleForm')">创建书架</el-button>
+              <el-button type="primary" @click="onSubmit('ruleForm')">创建书单</el-button>
             </el-row>
           </el-form-item>
         </el-form>
@@ -37,8 +37,8 @@ export default {
         desc: ""
       },
       rules: {
-        name: [{ required: true, message: "请输入书架名称", trigger: "blur" }],
-        desc: [{ required: true, message: "请输入书架描述", trigger: "blur" }]
+        name: [{ required: true, message: "请输入推荐书单名称", trigger: "blur" }],
+        desc: [{ required: true, message: "请输入书单描述", trigger: "blur" }]
       }
     };
   },

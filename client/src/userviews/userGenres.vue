@@ -53,7 +53,7 @@
                     <i class="el-icon-view"></i>
                     {{item.allClick}}人
                   </p>
-                  <!-- <p class="list-article02__genre">{{getGenre(item.genreNames)}}</p> -->
+                  <p class="list-article02__genre">{{getGenre(item.genreNames)}}</p>
                 </div>
               </div>
             </div>
@@ -81,11 +81,15 @@ export default {
   },
   computed: {
     showList() {
-      console.log("222222222222222222");
-      if (this.bookShelflist.length === 0) {
-        return [];
-      }
-      let list = this.bookShelflist[this.genreIndex].bookInfoList;
+      let genre = this.genres[this.genreIndex];
+      let list = this.bookList.filter(item => {
+        for (let i = 0; i < item.genres.length; ++i) {
+          if (genre._id === item.genres[i]) {
+            return true;
+          }
+        }
+        return false;
+      });
       switch (this.sortType) {
         case 0:
           list.sort((a, b) => {
@@ -101,8 +105,8 @@ export default {
       return list;
     },
     getGenreName() {
-      if (this.bookShelflist.length > 0) {
-        return this.bookShelflist[this.genreIndex].name;
+      if (this.genres.length > 0) {
+        return this.genres[this.genreIndex].name;
       }
       return "";
     }
@@ -117,23 +121,22 @@ export default {
     async initData() {
       this.loading = true;
       let genreList = await this.$fetch("genre/list");
-      let bookShelflist = await this.$fetch("bookshelf/list");
+      // let bookshelfList = await this.$fetch("bookshelf/list");
       let booklist = await this.$fetch("book/list");
       this.genres = genreList.data;
-
-      this.bookShelflist = bookShelflist.data;
-      let showLength = Math.ceil(this.bookShelflist.length / 6);
+      let showLength = Math.ceil(this.genres.length / 6);
       for (let i = 0; i < showLength; ++i) {
         let arr = [];
         for (let j = 0; j < 6; ++j) {
           let pos = i * 6 + j;
-          if (pos >= this.bookShelflist.length) {
+          if (pos >= this.genres.length) {
             break;
           }
-          arr.push(this.bookShelflist[pos]);
+          arr.push(this.genres[pos]);
         }
         this.showGenreList.push(arr);
       }
+      // this.bookShelflist = bookshelfList.data;
       this.bookList = booklist.data;
       this.loading = false;
     },

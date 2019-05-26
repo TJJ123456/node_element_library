@@ -32,14 +32,19 @@ if (userdata) {
 console.log(state.user);
 
 async function main() {
+  console.log('mainxxxxxxxxxxxxxxxxxxxx');
   try {
     state.user = await $fetch('user');
+    console.log(state.user);
+    if (state.user) {
+    }
     if (!state.manager)
       state.manager = await $fetch('manager1');
   } catch (e) {
     console.warn(e);
   }
 }
+main();
 
 new Vue({
   el: '#app',
@@ -48,4 +53,3 @@ new Vue({
   router
 })
 
-main();

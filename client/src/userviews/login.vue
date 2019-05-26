@@ -4,7 +4,7 @@
       <nav class="header02__area01">
         <ul class="header02__area02">
           <li class="header02__item01">
-            <a class="header02__lnk01">首页</a>
+            <a @click="toHome()" class="header02__lnk01">首页</a>
           </li>
         </ul>
       </nav>
@@ -66,6 +66,7 @@
 </template>
 <script>
 export default {
+  props: ["wantedRoute"],
   data() {
     return {
       questionList: [],
@@ -89,6 +90,9 @@ export default {
       let question = await this.$fetch("user/question");
       this.questionList = question.data;
       this.loading = false;
+    },
+    toHome() {
+      this.$router.push({ path: "/" });
     },
     checkusername() {
       if (this.username === "") {
@@ -145,8 +149,8 @@ export default {
         });
         this.$state.user = data;
         localStorage.setItem("user", JSON.stringify(data));
-        if (this.$route.params.wantedRoute) {
-          this.$router.replace(this.$route.params.wantedRoute);
+        if (this.wantedRoute) {
+          this.$router.replace(this.wantedRoute);
         } else {
           this.$router.replace("/");
         }

@@ -97,9 +97,26 @@ async function createBook() {
   }
 }
 
+async function createBookInstance() {
+  let booklist = await Books.find({});
+  for (let i = 0; i < booklist.length; ++i) {
+    const rand = randomIndex(30) + 2;
+    for (let j = 0; j < rand; ++j) {
+      const data = {
+        bookid: booklist[i]._id,
+        state: 0,
+        borrowtime: 0,
+        backtime: 0,
+      }
+      await BookInstances.insert(data);
+    }
+  }
+}
+
 async function initData() {
   // await createGenre();
-  await createBook();
+  // await createBook();
+  await createBookInstance();
 }
 
 // initData();

@@ -1,7 +1,8 @@
 <template>
   <div class="header_container">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/manager' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item class="tohome" :to="{ path: '/manager' }">首页</el-breadcrumb-item>
+      <!-- <a class="tohome" @click="tohome()">首页</a> -->
       <el-breadcrumb-item
         style="color:white;"
         v-for="(item, index) in $route.meta"
@@ -26,6 +27,9 @@ export default {
         localStorage.removeItem("manager");
         this.$router.replace("/managerlogin");
       }
+    },
+    tohome() {
+      this.$router.push({ path: "/manager" });
     }
   }
 };

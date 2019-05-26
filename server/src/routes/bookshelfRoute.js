@@ -8,11 +8,16 @@ async function getByname(name) {
 
 route.post('/create', async (req, res, next) => {
     try {
-        const food = await getByname(req.body.name);
-        if (food) {
-            throw new Error('已有同名的书架');
+        const doc = await getByname(req.body.name);
+        if (doc) {
+            throw new Error('已有同名的书单');
         }
-        const newDoc = await BookShelf.insert(req.body);
+        const data = {
+            name: req.body.name,
+            desc: req.body.desc,
+            booklist: [],
+        }
+        const newDoc = await BookShelf.insert(data);
         res.json({ status: 'ok' })
     } catch (e) {
         res.status(405).send(e.message);
@@ -35,9 +40,6 @@ route.post('/list', async (req, res, next) => {
     const offset = req.body.offset;
     try {
         let data = await BookShelf.find({}, { limit: limit, skip: offset });
-        for (let i = 0; i < data.length; ++i) {
-            data[i].bookList = await Books.find({ 'bookshelf': data[i]._id })
-        }
         res.json({
             data: data
         });
@@ -50,7 +52,11 @@ route.get('/list', async (req, res, next) => {
     try {
         let data = await BookShelf.find({});
         for (let i = 0; i < data.length; ++i) {
-            data[i].bookList = Books.find({ 'bookshelf': data[i]._id })
+            data[i].bookInfoList = [];
+            for (let j = 0; j < data[i].booklist.length; ++j) {
+                let doc = await Books.findOne({ _id: data[i].booklist[j] });
+                data[i].bookInfoList.push(doc);
+            }
         }
         res.json({
             data: data
@@ -74,7 +80,12 @@ route.post('/delete', async (req, res, next) => {
 route.post('/change', async (req, res, next) => {
     const id = req.body._id;
     try {
-        let data = await BookShelf.updateOne({ _id: id }, req.body);
+        const data = {
+            name: req.body.name,
+            desc: req.body.desc,
+            booklist: req.body.booklist,
+        }
+        let newDoc = await BookShelf.updateOne({ _id: id }, data);
         res.json({ status: 'ok' })
     } catch (e) {
         res.status(405).send(e.message);

@@ -11,17 +11,17 @@
               <i class="el-icon-document"></i>书籍管理
             </template>
             <el-menu-item index="bookList">书籍列表</el-menu-item>
-            <el-menu-item index="bookInstanceList">书籍实例列表</el-menu-item>
+            <!-- <el-menu-item index="bookInstanceList">书籍实例列表</el-menu-item> -->
             <el-menu-item index="addbook">添加书本</el-menu-item>
             <el-menu-item index="addBookInstance">添加书籍实例</el-menu-item>
             <el-menu-item index="borrowList">借阅列表</el-menu-item>
           </el-submenu>
           <el-submenu index="3">
             <template slot="title">
-              <i class="el-icon-plus"></i>书架管理
+              <i class="el-icon-plus"></i>推荐管理
             </template>
-            <el-menu-item index="bookshelfList">书架列表</el-menu-item>
-            <el-menu-item index="addBookshelf">添加书架</el-menu-item>
+            <el-menu-item index="bookshelfList">推荐列表</el-menu-item>
+            <el-menu-item index="addBookshelf">添加推荐</el-menu-item>
           </el-submenu>
           <el-submenu index="4">
             <template slot="title">
