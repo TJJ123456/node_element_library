@@ -76,8 +76,9 @@ async function createBook() {
       let maleClick = randomIndex(100) + 10;
       let femaleClick = randomIndex(100) + 10;
       let allClick = maleClick + femaleClick + randomIndex(100);
-      let publisher = publisherArr[randomIndex(publisherArr.length)];
+      let publisher = publisherArr[randomIndex(publisherArr.length)] + '出版社';
       let time = new Date();
+      let createtime = time.getTime() - 86400000 * randomIndex(7);
       let filepath = '/public/img/' + randomIndex(15) + '.jpg';
       let doc = {
         name,
@@ -90,7 +91,7 @@ async function createBook() {
         maleClick,
         femaleClick,
         allClick,
-        time: time.getTime()
+        time: createtime
       }
       await Books.insert(doc);
     }
@@ -115,7 +116,7 @@ async function createBookInstance() {
 
 async function initData() {
   // await createGenre();
-  // await createBook();
+  await createBook();
   await createBookInstance();
 }
 

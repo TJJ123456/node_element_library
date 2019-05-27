@@ -6,8 +6,9 @@
       role="toolbar"
     >
       <el-carousel :interval="5000" arrow="always">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <h3>{{ item }}</h3>
+        <el-carousel-item v-for="item in 3" :key="item">
+          <img style="width:100%;height:100%" :src="getCarousel(item)" alt>
+          <!-- <h3>{{ item }}</h3> -->
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -322,6 +323,9 @@ export default {
         this.getList();
         this.count = data.data;
       }
+    },
+    getCarousel(index) {
+      return `http://localhost:3000/public/carousel/${index}.jpg`;
     },
     search(keyword) {
       this.$router.push({

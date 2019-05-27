@@ -93,7 +93,7 @@ export default {
         desc: "",
         author: "",
         publisher: "",
-        genre: [],
+        genres: [],
         filepath: "",
         feature: "",
         // state: "",
@@ -103,7 +103,7 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入书本名称", trigger: "blur" }],
-        desc: [{ required: true, message: "请输入书本摘要", trigger: "blur" }],
+        desc: [{ required: true, message: "请输入书本简介", trigger: "blur" }],
         author: [{ required: true, message: "请输入作者", trigger: "blur" }],
         feature: [{ required: true, message: "请输入本书特色", trigger: "blur" }],
         publisher: [

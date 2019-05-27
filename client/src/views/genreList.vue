@@ -2,7 +2,7 @@
   <div class="fillcontain">
     <headTop/>
     <div class="table_container">
-      <el-table v-loading="loading" :data="tableData" style="width: 100%">
+      <el-table v-loading="loading" :data="showList" style="width: 100%">
         <el-table-column prop="name" label="种类名称"></el-table-column>
         <el-table-column prop="bookList.length" label="种类数量"></el-table-column>
         <el-table-column label="操作">
@@ -18,7 +18,7 @@
           :current-page="currentPage"
           :page-size="10"
           layout="total, prev, pager, next"
-          :total="count"
+          :total="tableData.length"
         ></el-pagination>
       </div>
       <el-dialog title="修改种类信息" :visible.sync="dialogFormVisible">
@@ -34,9 +34,14 @@
         </el-form>
       </el-dialog>
     </div>
+    <div class="line1">
+      <div id="line1" class style="width: 100%;height:450px;"></div>
+    </div>
   </div>
 </template>
 <script>
+import echarts from "echarts";
+import dtime from "time-formater";
 export default {
   data() {
     return {
@@ -54,17 +59,27 @@ export default {
       }
     };
   },
+  mounted() {
+    this.myChart1 = echarts.init(document.getElementById("line1"));
+  },
   created() {
     this.initData();
   },
   activated() {
     this.initData();
   },
+  computed: {
+    showList() {
+      let list = this.tableData;
+      return list.slice(this.offset, this.offset + 10);
+    }
+  },
   watch: {},
   methods: {
     async initData() {
-      // this.getList();
-      this.GetListCount();
+      await this.getList();
+      // await this.GetListCount();
+      this.drawLine1();
     },
     async GetListCount() {
       let data = await this.$fetch("genre/count");
@@ -74,13 +89,7 @@ export default {
       }
     },
     async getList() {
-      let data = await this.$fetch("genre/list", {
-        method: "POST",
-        body: JSON.stringify({
-          limit: this.limit,
-          offset: this.offset
-        })
-      });
+      let data = await this.$fetch("genre/list");
       this.tableData = data.data;
     },
     handleEdit(index, row) {
@@ -113,7 +122,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
-      this.getList();
+      // this.getList();
     },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
@@ -147,6 +156,53 @@ export default {
         );
         this.dialogFormVisible = false;
       }
+    },
+    drawLine1() {
+      let typenameArr = [];
+      let typecountArr = [];
+      for (let i = 0; i < this.tableData.length; ++i) {
+        let item = this.tableData[i];
+        typenameArr.push(item.name);
+        typecountArr.push({ value: item.bookList.length, name: item.name });
+      }
+      console.log("??", this.tableData.length, typenameArr);
+      let option = {
+        title: {
+          text: "种类分布",
+          x: "center"
+        },
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          data: typenameArr
+        },
+        series: [
+          {
+            name: "评论来源",
+            type: "pie",
+            radius: "55%",
+            center: ["50%", "60%"],
+            // data: [
+            //   { value: foodArr.length, name: "美食评论" },
+            //   { value: enArr.length, name: "娱乐评论" },
+            //   { value: spotArr.length, name: "景点评论" }
+            // ],
+            data: typecountArr,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
+      };
+      this.myChart1.setOption(option);
     }
   }
 };

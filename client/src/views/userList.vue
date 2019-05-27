@@ -2,7 +2,7 @@
   <div class="fillcontain">
     <headTop/>
     <div class="table_container">
-      <el-table v-loading="loading" :data="tableData" style="width: 100%">
+      <el-table v-loading="loading" :data="showList" style="width: 100%">
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="borrowcount" label="借书数量"></el-table-column>
         <el-table-column label="操作">
@@ -17,13 +17,18 @@
           :current-page="currentPage"
           :page-size="10"
           layout="total, prev, pager, next"
-          :total="count"
+          :total="tableData.length"
         ></el-pagination>
       </div>
+    </div>
+    <div class="line1">
+      <div id="line1" class style="width: 100%;height:450px;"></div>
     </div>
   </div>
 </template>
 <script>
+import echarts from "echarts";
+import dtime from "time-formater";
 export default {
   data() {
     return {
@@ -37,17 +42,27 @@ export default {
       loading: false
     };
   },
+  mounted() {
+    this.myChart1 = echarts.init(document.getElementById("line1"));
+  },
   created() {
     this.initData();
   },
   activated() {
     this.initData();
   },
+  computed: {
+    showList() {
+      let list = this.tableData;
+      return list.slice(this.offset, this.offset + 10);
+    }
+  },
   watch: {},
   methods: {
     async initData() {
-      // this.getList();
-      this.GetListCount();
+      await this.getList();
+      this.drawLine1();
+      // this.GetListCount();
     },
     async GetListCount() {
       let data = await this.$fetch("user/count");
@@ -57,13 +72,7 @@ export default {
       }
     },
     async getList() {
-      let data = await this.$fetch("user/list", {
-        method: "POST",
-        body: JSON.stringify({
-          limit: this.limit,
-          offset: this.offset
-        })
-      });
+      let data = await this.$fetch("user/list");
       this.tableData = data.data;
     },
     handleEdit(index, row) {
@@ -96,7 +105,39 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.offset = (val - 1) * this.limit;
-      this.getList();
+      // this.getList();
+    },
+    drawLine1() {
+      let typenameArr = [];
+      let typecountArr = [];
+      let tmpArr = this.tableData.sort((a, b) => {
+        return b.borrowcount - a.borrowcount;
+      });
+      tmpArr = tmpArr.slice(0, 10);
+      for (let i = 0; i < tmpArr.length; ++i) {
+        let item = tmpArr[i];
+        typenameArr.push(item.username);
+        typecountArr.push(item.borrowcount);
+      }
+      let option = {
+        title: {
+          text: "借阅排名"
+        },
+        xAxis: {
+          type: "value"
+        },
+        yAxis: {
+          type: "category",
+          data: typenameArr
+        },
+        series: [
+          {
+            data: typecountArr,
+            type: "bar"
+          }
+        ]
+      };
+      this.myChart1.setOption(option);
     }
   }
 };

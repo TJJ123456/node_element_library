@@ -1,8 +1,46 @@
 <template>
   <div class="fillcontain">
     <headTop/>
+    <div style="margin-top:10px;">
+      <input v-model="search" type="text" class="searchbox" placeholder="输入书籍名称">
+      <p style="color:gray; margin-left:20px; font-size: 14px;">输入书籍名称快速检索书籍</p>
+    </div>
+
     <div class="table_container">
-      <el-table v-loading="loading" :data="tableData" style="width: 100%">
+      <el-table v-loading="loading" :data="showList" style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="书名">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="简介">
+                <span>{{ props.row.desc }}</span>
+              </el-form-item>
+              <el-form-item label="出版社">
+                <span>{{ props.row.publisher }}</span>
+              </el-form-item>
+              <el-form-item label="种类">
+                <span>{{ props.row.genreNames }}</span>
+              </el-form-item>
+              <el-form-item label="实例数量">
+                <span>{{getBookinstanceList(props.row._id).length}}</span>
+              </el-form-item>
+              <el-form-item label="总点击量">
+                <span>{{ props.row.allClick }}</span>
+              </el-form-item>
+              <el-form-item label="男生点击量">
+                <span>{{ props.row.maleClick }}</span>
+              </el-form-item>
+              <el-form-item label="女生点击量">
+                <span>{{ props.row.femaleClick }}</span>
+              </el-form-item>
+              <el-form-item label="借阅次数">
+                <span>{{ props.row.lendTimes }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column prop="publisher" label="出版社"></el-table-column>
@@ -21,7 +59,7 @@
           :current-page="currentPage"
           :page-size="10"
           layout="total, prev, pager, next"
-          :total="count"
+          :total="tableData.length"
         ></el-pagination>
       </div>
       <el-dialog title="修改书籍信息" :visible.sync="dialogFormVisible">
@@ -66,24 +104,6 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10m</div>
             </el-upload>
           </el-form-item>
-          <!-- <el-form-item label="书本状态" prop="state">
-            <el-select v-model="dialogForm.state" placeholder="请选择书本状态">
-              <el-option label="维护" value="维护"></el-option>
-              <el-option label="可借阅" value="可借阅"></el-option>
-            </el-select>
-          </el-form-item>
-          <template v-if="dialogForm.state==='可借阅'">
-            <el-form-item label="所属书架">
-              <el-select v-model="dialogForm.bookshelf" placeholder="请选择书架">
-                <el-option
-                  v-for="(item, index) in bookshelfList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item._id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </template>-->
           <el-form-item>
             <el-row type="flex" justify="center">
               <el-button type="primary" @click="onSubmit('dialogForm')">提交修改</el-button>
@@ -92,14 +112,24 @@
         </el-form>
       </el-dialog>
     </div>
+    <div class="line1">
+      <div id="line1" class style="width: 100%;height:450px;"></div>
+      <div id="line2" class style="width: 100%;height:450px;"></div>
+      <div id="line3" class style="width: 100%;height:450px;"></div>
+      <div id="line4" class style="width: 100%;height:450px;"></div>
+    </div>
   </div>
 </template>
 <script>
+import echarts from "echarts";
+import dtime from "time-formater";
 export default {
   data() {
     return {
+      search: "",
       genreList: [],
       bookshelfList: [],
+      bookInstanceList: [],
       editIndex: 0,
       currentPage: 1,
       offset: 0,
@@ -126,7 +156,21 @@ export default {
   activated() {
     this.GetListCount();
   },
+  computed: {
+    showList() {
+      let list = this.tableData;
+      let regex = new RegExp(this.search);
+      list = list.filter(item => item.name.match(regex));
+      return list.slice(this.offset, this.offset + 10);
+    }
+  },
   watch: {},
+  mounted() {
+    this.myChart1 = echarts.init(document.getElementById("line1"));
+    this.myChart2 = echarts.init(document.getElementById("line2"));
+    this.myChart3 = echarts.init(document.getElementById("line3"));
+    this.myChart4 = echarts.init(document.getElementById("line4"));
+  },
   methods: {
     async initData() {
       // this.getList();
@@ -135,7 +179,14 @@ export default {
       let bookshelfList = await this.$fetch("bookshelf/list");
       this.genreList = genreList.data;
       this.bookshelfList = bookshelfList.data;
-      this.GetListCount();
+      await this.getList();
+      let bookinstancelist = await this.$fetch("bookinstance/list");
+      this.bookInstanceList = bookinstancelist.data;
+      // this.GetListCount();
+      this.drawLine1();
+      this.drawLine2();
+      this.drawLine3();
+      this.drawLine4();
       this.loading = false;
     },
     async GetListCount() {
@@ -146,19 +197,16 @@ export default {
       }
     },
     async getList() {
-      let data = await this.$fetch("book/list", {
-        method: "POST",
-        body: JSON.stringify({
-          limit: this.limit,
-          offset: this.offset
-        })
-      });
+      let data = await this.$fetch("book/list");
       this.tableData = data.data;
     },
     handleEdit(index, row) {
       this.editIndex = index;
       this.dialogFormVisible = true;
       this.dialogForm = JSON.parse(JSON.stringify(this.tableData[index]));
+    },
+    getBookinstanceList(bookid) {
+      return this.bookInstanceList.filter(item => item.bookid === bookid);
     },
     async handleDelete(index, row) {
       let data = await this.$fetch("book/delete", {
@@ -239,6 +287,134 @@ export default {
     },
     uploadSuccess(res, file) {
       this.ruleForm.filepath = res.filepath;
+    },
+    drawLine1() {
+      let typenameArr = [];
+      let typecountArr = [];
+      let tmpArr = this.tableData.sort((a, b) => {
+        return b.allClick - a.allClick;
+      });
+      tmpArr = tmpArr.slice(0, 10);
+      for (let i = 0; i < tmpArr.length; ++i) {
+        let item = tmpArr[i];
+        typenameArr.push(item.name);
+        typecountArr.push(item.allClick);
+      }
+      let option = {
+        title: {
+          text: "点击量最高图书"
+        },
+        xAxis: {
+          type: "value"
+        },
+        yAxis: {
+          type: "category",
+          data: typenameArr
+        },
+        series: [
+          {
+            data: typecountArr,
+            type: "bar"
+          }
+        ]
+      };
+      this.myChart1.setOption(option);
+    },
+    drawLine2() {
+      let typenameArr = [];
+      let typecountArr = [];
+      let tmpArr = this.tableData.sort((a, b) => {
+        return b.maleClick - a.maleClick;
+      });
+      tmpArr = tmpArr.slice(0, 10);
+      for (let i = 0; i < tmpArr.length; ++i) {
+        let item = tmpArr[i];
+        typenameArr.push(item.name);
+        typecountArr.push(item.maleClick);
+      }
+      let option = {
+        title: {
+          text: "男生点击最多图书"
+        },
+        xAxis: {
+          type: "value"
+        },
+        yAxis: {
+          type: "category",
+          data: typenameArr
+        },
+        series: [
+          {
+            data: typecountArr,
+            type: "bar"
+          }
+        ]
+      };
+      this.myChart2.setOption(option);
+    },
+    drawLine3() {
+      let typenameArr = [];
+      let typecountArr = [];
+      let tmpArr = this.tableData.sort((a, b) => {
+        return b.femaleClick - a.femaleClick;
+      });
+      tmpArr = tmpArr.slice(0, 10);
+      for (let i = 0; i < tmpArr.length; ++i) {
+        let item = tmpArr[i];
+        typenameArr.push(item.name);
+        typecountArr.push(item.femaleClick);
+      }
+      let option = {
+        title: {
+          text: "女生点击最多图书"
+        },
+        xAxis: {
+          type: "value"
+        },
+        yAxis: {
+          type: "category",
+          data: typenameArr
+        },
+        series: [
+          {
+            data: typecountArr,
+            type: "bar"
+          }
+        ]
+      };
+      this.myChart3.setOption(option);
+    },
+    drawLine4() {
+      let typenameArr = [];
+      let typecountArr = [];
+      let tmpArr = this.tableData.sort((a, b) => {
+        return b.lendTimes - a.lendTimes;
+      });
+      tmpArr = tmpArr.slice(0, 10);
+      for (let i = 0; i < tmpArr.length; ++i) {
+        let item = tmpArr[i];
+        typenameArr.push(item.name);
+        typecountArr.push(item.lendTimes);
+      }
+      let option = {
+        title: {
+          text: "借阅最多图书"
+        },
+        xAxis: {
+          type: "value"
+        },
+        yAxis: {
+          type: "category",
+          data: typenameArr
+        },
+        series: [
+          {
+            data: typecountArr,
+            type: "bar"
+          }
+        ]
+      };
+      this.myChart4.setOption(option);
     }
   }
 };
@@ -274,5 +450,11 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+.searchbox {
+  border: 1px solid #8c939d;
+  height: 30px;
+  width: 200px;
+  margin-left: 20px;
 }
 </style>

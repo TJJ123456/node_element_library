@@ -32,6 +32,12 @@
                   <li class="article-hero08__list-meta-item">
                     <p class="article-hero08__author">点击次数：{{bookDetail.allClick}}</p>
                   </li>
+                  <li class="article-hero08__list-meta-item">
+                    <p class="article-hero08__author">|</p>
+                  </li>
+                  <li class="article-hero08__list-meta-item">
+                    <p class="article-hero08__author">借阅次数：{{bookDetail.lendTimes}}</p>
+                  </li>
                 </ul>
                 <ul class="article-hero08__list-genre">
                   <li

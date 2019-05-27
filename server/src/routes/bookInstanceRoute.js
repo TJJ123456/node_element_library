@@ -59,11 +59,6 @@ route.get('/list', async (req, res, next) => {
     try {
         let data = await BookInstances.find({});
         for (let i = 0; i < data.length; ++i) {
-            if (data[i].bookshelf !== '') {
-                // console.log(data[i]);
-                let shelf = await BookShelf.findOne({ _id: data[i].bookshelf });
-                data[i].shelfname = shelf.name;
-            }
             let book = await Books.findOne({ _id: data[i].bookid });
             data[i].bookname = book.name;
         }

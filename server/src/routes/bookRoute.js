@@ -14,7 +14,7 @@ route.post('/create', async (req, res, next) => {
             desc: req.body.desc,
             author: req.body.author,
             publisher: req.body.publisher,
-            genre: req.body.genre,
+            genres: req.body.genres,
             filepath: req.body.filepath,
             lendTimes: req.body.lendTimes,
             maleClick: 0,
@@ -70,6 +70,7 @@ route.get('/list', async (req, res, next) => {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
+            data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
         res.json({
             data: data
@@ -89,6 +90,7 @@ route.get('/malelist', async (req, res, next) => {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
+            data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
         res.json({
             data: data
@@ -108,6 +110,7 @@ route.get('/femalelist', async (req, res, next) => {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
+            data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
         res.json({
             data: data
@@ -127,6 +130,7 @@ route.get('/clicklist', async (req, res, next) => {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
+            data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
         res.json({
             data: data
@@ -146,7 +150,9 @@ route.get('/newlist', async (req, res, next) => {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
                 data[i].genreNames.push(genre.name);
             }
+            data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
+        
         res.json({
             data: data
         });
@@ -206,6 +212,7 @@ route.post('/detail', async (req, res, next) => {
             let doc = await Genres.findOne({ _id: book.genres[i] })
             book.genreNamelist.push(doc.name);
         }
+        book.lendTimes = await BorrowList.count({ bookid: book._id });
         book.remaining = await BookInstances.count({ bookid: book._id, state: 0 });
         let borrowInfo;
         if (req.session.user) {
