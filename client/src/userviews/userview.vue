@@ -26,7 +26,10 @@
               <p class="list-inbox__label1">{{item.bookdetail.name}}</p>
               <div class="list-inbox__footer">
                 <div class="list-inbox__date _expireDate">
-                  <p>还书日期：{{item.back}}</p>
+                  <p>借书日期：{{item.borrow}}</p>
+
+                  <p v-if="item.backTime === 0">还书期限：{{item.limitTime}}</p>
+                  <p v-else>还书日期：{{item.back}}</p>
                 </div>
                 <div v-if="item.backTime ===0" class="list-inbox__action">
                   <p>
@@ -84,6 +87,10 @@ export default {
           item.borrow = this.formatTime(item.borrowTime);
           item.back =
             item.backTime === 0 ? "未归还" : this.formatTime(item.backTime);
+          if (item.backTime === 0) {
+            console.log(item.borrowTime);
+            item.limitTime = this.formatTime(item.borrowTime + 86400000 * 3);
+          }
         });
       }
       this.loading = false;

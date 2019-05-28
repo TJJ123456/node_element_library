@@ -152,7 +152,7 @@ route.get('/newlist', async (req, res, next) => {
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
-        
+
         res.json({
             data: data
         });
@@ -180,7 +180,7 @@ route.post('/change', async (req, res, next) => {
             desc: req.body.desc,
             author: req.body.author,
             publisher: req.body.publisher,
-            genre: req.body.genre,
+            genres: req.body.genres,
             filepath: req.body.filepath,
             lendTimes: req.body.lendTimes,
             maleClick: req.body.maleClick,
@@ -331,7 +331,7 @@ route.get('/borrowlist', async (req, res, next) => {
         if (!req.session.user) {
             throw new Error('请登录');
         }
-        let list = await BorrowList.find({ reader: req.session.user._id }, { sort: { backTime: 1 } });
+        let list = await BorrowList.find({ reader: req.session.user._id }, { sort: { borrowTime: -1, backTime: 1 } });
         for (let i in list) {
             list[i].bookdetail = await Books.findOne({ _id: list[i].bookid });
         }

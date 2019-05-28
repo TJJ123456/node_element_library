@@ -77,7 +77,7 @@
             <el-input v-model="dialogForm.publisher"></el-input>
           </el-form-item>
           <el-form-item label="书本种类">
-            <el-checkbox-group v-model="dialogForm.genre">
+            <el-checkbox-group v-model="dialogForm.genres">
               <el-checkbox
                 v-for="(item, index) in genreList"
                 :key="index"

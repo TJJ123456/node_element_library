@@ -44,7 +44,7 @@
         </el-col>
         <el-col :span="6">
           <div class="data_list">
-            <span class="data_num">{{todayBorrowCount}}</span> 还书
+            <span class="data_num">{{todayBorrowCount}}</span> 借书
           </div>
         </el-col>
       </el-row>

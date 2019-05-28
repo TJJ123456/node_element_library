@@ -125,11 +125,14 @@ route.post('/borrow', async (req, res, next) => {
         if (!req.session.user) {
             throw new Error('请登录');
         }
+        req.session.user = await Users.findOne({ _id: req.session.user._id });
+        if (req.session.user.ban) {
+            throw new Error('您现在不能借书');
+        }
         let activeBook = await BookInstances.findOne({ bookid: bookid, state: 0 });
         if (!activeBook) {
             throw new Error('本书被借完啦');
         }
-        console.log(activeBook);
         let doc = await BorrowList.findOne({ reader: req.session.user._id, bookid: bookid, backTime: 0 });
         if (doc) {
             throw new Error('您已借阅过了');
@@ -143,9 +146,20 @@ route.post('/borrow', async (req, res, next) => {
             backTime: 0,//没还书就是0
         }
         const newdoc = await BorrowList.insert(data);
-        console.log(newdoc);
         let upbook = await BookInstances.updateOne({ _id: activeBook._id }, { $set: { 'state': 1 } });
-        res.json({ state: 'ok' });
+        let book = await Books.findOne({ _id: bookid });
+        book.genreNamelist = [];
+        for (let i = 0; i < book.genres.length; ++i) {
+            let doc = await Genres.findOne({ _id: book.genres[i] })
+            book.genreNamelist.push(doc.name);
+        }
+        book.lendTimes = await BorrowList.count({ bookid: book._id });
+        book.remaining = await BookInstances.count({ bookid: book._id, state: 0 });
+        let borrowInfo;
+        if (req.session.user) {
+            borrowInfo = await BorrowList.findOne({ reader: req.session.user._id, bookid: bookid, backTime: 0 })
+        }
+        res.json({ book: book, borrowInfo: borrowInfo });
     } catch (e) {
         res.status(405).send(e.message);
     }
@@ -159,9 +173,21 @@ route.post('/backBook', async (req, res, next) => {
         }
         let date = new Date();
         const doc = await BorrowList.updateOne({ bookinstanceid: bookinstanceid, backTime: 0, reader: req.session.user._id }, { $set: { 'backTime': date.getTime() } });
-        console.log('还书情况', doc);
         let upbook = await BookInstances.updateOne({ _id: bookinstanceid }, { $set: { 'state': 0 } });
-        res.json({ state: 'ok' });
+        let bookins = await BookInstances.findOne({ _id: bookinstanceid });
+        let book = await Books.findOne({ _id: bookins.bookid });
+        book.genreNamelist = [];
+        for (let i = 0; i < book.genres.length; ++i) {
+            let doc = await Genres.findOne({ _id: book.genres[i] })
+            book.genreNamelist.push(doc.name);
+        }
+        book.lendTimes = await BorrowList.count({ bookid: book._id });
+        book.remaining = await BookInstances.count({ bookid: book._id, state: 0 });
+        let borrowInfo;
+        if (req.session.user) {
+            borrowInfo = await BorrowList.findOne({ reader: req.session.user._id, bookid: book._id, backTime: 0 })
+        }
+        res.json({ book: book, borrowInfo: borrowInfo });
     } catch (e) {
         res.status(405).send(e.message);
     }
@@ -202,7 +228,6 @@ route.post('/managerborrowlist', async (req, res, next) => {
     const offset = req.body.offset;
     try {
         let list = await BorrowList.find({}, { sort: { backTime: 1 }, limit: limit, skip: offset });
-        console.log('借书列表', list);
         for (let i in list) {
             list[i].bookname = (await Books.findOne({ _id: list[i].book })).name;
             list[i].readername = (await Users.findOne({ _id: list[i].reader })).username;

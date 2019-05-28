@@ -121,3 +121,18 @@ async function initData() {
 }
 
 // initData();
+
+async function checkBorrowBook() {
+  setInterval(async function () {
+    let list = await BorrowList.find({ backTime: 0 });
+    let date = new Date();
+    let time = date.getTime();
+    list.forEach(async item => {
+      if (item.borrowTime + 86400000 * 3 < time) {
+        let newdoc = await BorrowList.updateOne({ _id: item._id }, { $set: { 'backTime': time } });
+        let bookinstances = await BookInstances.updateOne({ _id: item.bookinstanceid }, { $set: { 'backtime': time } });
+      }
+    })
+  }, 6000);
+}
+checkBorrowBook();

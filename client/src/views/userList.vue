@@ -5,8 +5,21 @@
       <el-table v-loading="loading" :data="showList" style="width: 100%">
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="borrowcount" label="借书数量"></el-table-column>
+        <el-table-column prop="bandesc" label="借书权限"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
+            <el-button
+              v-if="!isBan(scope.$index)"
+              size="mini"
+              type="warning"
+              @click="handleBan(scope.$index, scope.row)"
+            >禁止借书</el-button>
+            <el-button
+              v-if="isBan(scope.$index)"
+              size="mini"
+              type="success"
+              @click="handleUnBan(scope.$index, scope.row)"
+            >恢复权限</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -61,6 +74,13 @@ export default {
   methods: {
     async initData() {
       await this.getList();
+      this.tableData.forEach(item => {
+        if (item.ban) {
+          item.bandesc = "不可借书";
+        } else {
+          item.bandesc = "允许借书";
+        }
+      });
       this.drawLine1();
       // this.GetListCount();
     },
@@ -74,6 +94,13 @@ export default {
     async getList() {
       let data = await this.$fetch("user/list");
       this.tableData = data.data;
+    },
+    getBandes(ban) {
+      if (ban) {
+        return "不可借书";
+      } else {
+        return "允许借书";
+      }
     },
     handleEdit(index, row) {
       this.editIndex = index;
@@ -100,6 +127,57 @@ export default {
           type: "success"
         });
         this.tableData.splice(index, 1);
+      }
+    },
+    async handleBan(index, row) {
+      let data = await this.$fetch("user/ban", {
+        method: "POST",
+        body: JSON.stringify({
+          id: this.tableData[index]._id
+        })
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "操作成功",
+          type: "success"
+        });
+        this.initData();
+      }
+    },
+    isBan(index) {
+      if (this.tableData[index].ban) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async handleUnBan(index, row) {
+      let data = await this.$fetch("user/unban", {
+        method: "POST",
+        body: JSON.stringify({
+          id: this.tableData[index]._id
+        })
+      });
+      if (data.err) {
+        this.$message({
+          showClose: true,
+          message: data.msg,
+          type: "error"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "操作成功",
+          type: "success"
+        });
+        this.initData();
       }
     },
     handleCurrentChange(val) {

@@ -197,6 +197,12 @@ export default {
             name: "userLogin",
             params: { wantedRoute: this.$route.path }
           });
+        } else if (data.msg === "您现在不能借书") {
+          this.$alert(data.msg, "", {
+            confirmButtonText: "确定",
+            callback: action => {}
+          });
+          return;
         }
         this.$message({
           showClose: true,
@@ -209,10 +215,13 @@ export default {
           message: "借书成功",
           type: "success"
         });
-        this.initData();
+        // this.initData();
+        this.bookDetail = data.book;
+        this.borrowInfo = data.borrowInfo;
       }
     },
     async backBook() {
+
       let data = await this.$fetch("bookinstance/backBook", {
         method: "POST",
         body: JSON.stringify({
@@ -237,7 +246,8 @@ export default {
           message: "还书成功",
           type: "success"
         });
-        this.initData();
+        this.bookDetail = data.book;
+        this.borrowInfo = data.borrowInfo;
       }
     },
     toDetail(id) {

@@ -51,6 +51,7 @@ async function createUser({ username, password, question, answer, sex }) {
             question,
             answer,
             sex,
+            ban: 0,//ban 为1不许借书
             createTime: time.getTime(),
         })
         return result
@@ -184,6 +185,9 @@ route.get('/list', async (req, res, next) => {
         let data = await Users.find({});
         for (let i in data) {
             data[i].borrowcount = await BorrowList.count({ reader: data[i]._id });
+            if (data[i].ban === undefined) {
+                data[i].ban = 0;
+            }
         }
         res.json({
             data: data
@@ -204,6 +208,36 @@ route.post('/list', async (req, res, next) => {
         res.json({
             data: data
         });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
+route.post('/delete', async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        let data = await Users.removeOne({ _id: id });
+        res.json({ status: 'ok' });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
+route.post('/ban', async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        let doc = await Users.updateOne({ _id: id }, { $set: { 'ban': 1 } });
+        res.json({ status: 'ok' });
+    } catch (e) {
+        res.status(405).send(e.message);
+    }
+})
+
+route.post('/unban', async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        let doc = await Users.updateOne({ _id: id }, { $set: { 'ban': 0 } });
+        res.json({ status: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
     }
