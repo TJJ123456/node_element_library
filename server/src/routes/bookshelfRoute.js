@@ -55,7 +55,9 @@ route.get('/list', async (req, res, next) => {
             data[i].bookInfoList = [];
             for (let j = 0; j < data[i].booklist.length; ++j) {
                 let doc = await Books.findOne({ _id: data[i].booklist[j] });
-                data[i].bookInfoList.push(doc);
+                if (doc) {
+                    data[i].bookInfoList.push(doc);
+                }
             }
         }
         res.json({

@@ -89,8 +89,8 @@ export default {
         new Date(new Date().toLocaleDateString()).getTime()
       );
       let arr = this.borrowList.filter(item => {
-        if (item.createTime) {
-          return item.createTime > start;
+        if (item.borrowTime) {
+          return item.borrowTime > start.getTime();
         } else {
           return false;
         }

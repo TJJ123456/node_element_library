@@ -81,7 +81,6 @@ export default {
   },
   computed: {
     showList() {
-      console.log("222222222222222222");
       if (this.bookShelflist.length === 0) {
         return [];
       }

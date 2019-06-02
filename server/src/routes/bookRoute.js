@@ -68,7 +68,8 @@ route.get('/list', async (req, res, next) => {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
-                data[i].genreNames.push(genre.name);
+                if (genre)
+                    data[i].genreNames.push(genre.name);
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
@@ -88,7 +89,8 @@ route.get('/malelist', async (req, res, next) => {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
-                data[i].genreNames.push(genre.name);
+                if (genre)
+                    data[i].genreNames.push(genre.name);
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
@@ -108,7 +110,8 @@ route.get('/femalelist', async (req, res, next) => {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
-                data[i].genreNames.push(genre.name);
+                if (genre)
+                    data[i].genreNames.push(genre.name);
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
@@ -128,7 +131,8 @@ route.get('/clicklist', async (req, res, next) => {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
-                data[i].genreNames.push(genre.name);
+                if (genre)
+                    data[i].genreNames.push(genre.name);
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
@@ -148,7 +152,8 @@ route.get('/newlist', async (req, res, next) => {
             data[i].genreNames = [];
             for (let j = 0; j < data[i].genres.length; ++j) {
                 let genre = await Genres.findOne({ _id: data[i].genres[j] });
-                data[i].genreNames.push(genre.name);
+                if (genre)
+                    data[i].genreNames.push(genre.name);
             }
             data[i].lendTimes = await BorrowList.count({ bookid: data[i]._id });
         }
@@ -165,7 +170,12 @@ route.get('/newlist', async (req, res, next) => {
 route.post('/delete', async (req, res, next) => {
     const id = req.body.id;
     try {
+        //先删除实例
+        await BookInstances.remove({ bookid: id });
+        //再删除借阅表
+        await BorrowList.remove({ bookid: id });
         let data = await Books.removeOne({ _id: id });
+        console.log(id, data);
         res.json({ status: 'ok' });
     } catch (e) {
         res.status(405).send(e.message);
@@ -210,7 +220,8 @@ route.post('/detail', async (req, res, next) => {
         book.genreNamelist = [];
         for (let i = 0; i < book.genres.length; ++i) {
             let doc = await Genres.findOne({ _id: book.genres[i] })
-            book.genreNamelist.push(doc.name);
+            if (doc)
+                book.genreNamelist.push(doc.name);
         }
         book.lendTimes = await BorrowList.count({ bookid: book._id });
         book.remaining = await BookInstances.count({ bookid: book._id, state: 0 });
@@ -230,7 +241,8 @@ route.post('/detail', async (req, res, next) => {
             relateList[i].genreNamelist = [];
             for (let j = 0; j < relateList[i].genres.length; ++j) {
                 let doc = await Genres.findOne({ _id: relateList[i].genres[j] })
-                relateList[i].genreNamelist.push(doc.name);
+                if (doc)
+                    relateList[i].genreNamelist.push(doc.name);
             }
         }
 
